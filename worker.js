@@ -3,20 +3,6 @@ var request = require('request');
 var amqp = require('amqplib/callback_api');
 require('dotenv').config()
 
-// amqp.connect('amqps://ekstlczn:tNUs-dhQ_vIGc9bLmTFcmzvpptX2LVsK@gerbil.rmq.cloudamqp.com/ekstlczn', function(err, conn) {
-//     conn.createChannel(function(err, ch) {
-//         var q = 'movieUrls';
-//
-//         ch.assertQueue(q, {durable: false});
-//         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
-//         ch.consume(q, function(msg) {
-//             console.log(" [x] Received %s", msg.content.toString());
-//             var url = msg.content.toString();
-//             console.log(url);
-//         }, {noAck: true});
-//     });
-// });
-
 amqp.connect(process.env.amqpUrl, function(error0, connection) {
     if (error0) {
         throw error0;

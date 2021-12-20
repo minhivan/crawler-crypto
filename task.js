@@ -1,10 +1,6 @@
 var amqp = require('amqplib/callback_api');
 require('dotenv').config()
 
-
-// const url = 'amqps://ekstlczn:tNUs-dhQ_vIGc9bLmTFcmzvpptX2LVsK@gerbil.rmq.cloudamqp.com/ekstlczn';
-
-
 function test(index){
     index = 350000+index
     return 'http://www.imdb.com/title/tt0'+index
