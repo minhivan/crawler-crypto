@@ -1,7 +1,12 @@
 // init state
-
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
+// for read & write file
+const fs = require('fs');
+const coin_list = JSON.parse(fs.readFileSync('data/coin_list.json'));
+
+// implement elasticsearch
+
 
 
 class GetCKCData  {
@@ -12,33 +17,51 @@ class GetCKCData  {
     };
 
     // coin
-    static async getListCoin()
+    async fetchCoinList()
     {
-        let data = await CoinGeckoClient.coins.list();
-        console.log(data);
+        try {
+            const data = await CoinGeckoClient.coins.list();
+            if (data) {
+                fs.writeFileSync('data/coin_list.json', JSON.stringify(data.data));
+                console.log('total coin are ' + coin_list.length + ' elements.');
+            }
+            // return CoinGeckoClient.coins.list();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    static async getCoinMarket()
+    async insertNewCoin() 
+    {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+
+   async getCoinMarket()
     {
         return CoinGeckoClient.coins.markets();
     }
 
-    static async getCurrentCoinData(id, params = {})
+    async getCurrentCoinData(id, params = {})
     {
         return CoinGeckoClient.coins.fetch(id, params);
     }
 
-    static async getCoinTickers(id, params={})
+    async getCoinTickers(id, params={})
     {
         return CoinGeckoClient.coins.fetchTickers(id, params);
     }
 
-    static async getHistoricalData(id, params={})
+    async getHistoricalData(id, params={})
     {
         return CoinGeckoClient.coins.fetchTickers(id);
     }
 
-    static async getCoinMarketChart(id, params={})
+    async getCoinMarketChart(id, params={})
     {
         return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
     }
@@ -57,9 +80,9 @@ class GetCKCData  {
 
 }
 
-GetCKCData.getCoinMarket().then(r => {
-    console.log(r);
-});
+const crawCKCData = new GetCKCData();
+
+module.exports = crawCKCData;
 
 // detail coin
 
