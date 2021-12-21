@@ -40,8 +40,8 @@ amqp.connect(process.env.amqpUrl, function(error0, connection) {
         });
         console.log(" [x] Sent '%s'", msg);
     });
-    setTimeout(function() {
-        connection.close();
-        process.exit(0)
-    }, 500);
+    // setTimeout(function() {
+    //     connection.close();
+    //     process.exit(0)
+    // }, 500);
 });
