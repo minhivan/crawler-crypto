@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../coinv2-api-new/.idea/coinv2-api-new.iml" filepath="$PROJECT_DIR$/../coinv2-api-new/.idea/coinv2-api-new.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/new_crawler.iml" filepath="$PROJECT_DIR$/.idea/new_crawler.iml" />
     </modules>
   </component>
