@@ -1,4 +1,4 @@
-var CGK = require('./controllers/get_data');
+var CGKCoin = require('./controllers/coin.controller');
 
 
-CGK.fetchCoinList();
+CGKCoin.insertNewCoin();

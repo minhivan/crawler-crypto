@@ -3,20 +3,26 @@ const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
 // for read & write file
 const fs = require('fs');
-const coin_list = JSON.parse(fs.readFileSync('data/coin_list.json'));
 
 // implement elasticsearch
 
 
 
-class GetCGKData  {
+class CGKCoinController  {
+    constructor() {
+        this.coin_list = JSON.parse(fs.readFileSync('data/coin_list.json'));
+        this.coin_details = JSON.parse(fs.readFileSync('data/coin_details.json'));
+        
+    }
+
     async ping()
     {
         let data = await CoinGeckoClient.ping();
         console.log(data);
     };
 
-    // coin
+    // CGK Coin
+    // write data to file json
     async fetchCoinList()
     {
         try {
@@ -34,9 +40,15 @@ class GetCGKData  {
     async insertNewCoin() 
     {
         try {
-            
+            // map data and insert to db
+            await fetchCoinList();
+            let list_coin_update = coin_list.map((data) => {
+                return data;
+            }) 
+
+
         } catch (error) {
-            
+            console.log(error);
         }
     }
 
@@ -80,9 +92,9 @@ class GetCGKData  {
 
 }
 
-let CGK = new GetCGKData();
+let CGKCoin = new CGKCoinController();
 
-module.exports = CGK;
+module.exports = CGKCoin;
 
 // detail coin
 
