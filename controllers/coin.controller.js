@@ -3,16 +3,15 @@ const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
 // for read & write file
 const fs = require('fs');
-
 // implement elasticsearch
+const elasticService = require("../services/elastic.service");
 
 
 
 class CGKCoinController  {
     constructor() {
         this.coin_list = JSON.parse(fs.readFileSync('data/coin_list.json'));
-        this.coin_details = JSON.parse(fs.readFileSync('data/coin_details.json'));
-        
+        //this.coin_details = JSON.parse(fs.readFileSync('data/coin_details.json'));
     }
 
     async ping()
@@ -30,6 +29,7 @@ class CGKCoinController  {
             if (data) {
                 fs.writeFileSync('data/coin_list.json', JSON.stringify(data.data));
                 console.log('total coin are ' + coin_list.length + ' elements.');
+                
             }
             // return CoinGeckoClient.coins.list();
         } catch (error) {
@@ -37,16 +37,17 @@ class CGKCoinController  {
         }
     };
 
-    async insertNewCoin() 
+    async syncCoinList() 
     {
         try {
             // map data and insert to db
-            await fetchCoinList();
-            let list_coin_update = coin_list.map((data) => {
-                return data;
-            }) 
 
+            console.log("Syning data to elastic");
+            let insert_data = this.coin_list.map(coin => {
 
+            })
+
+            elasticService.elk_create_bulk('coin_list')
         } catch (error) {
             console.log(error);
         }
