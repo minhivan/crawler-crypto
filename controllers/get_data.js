@@ -9,7 +9,7 @@ const coin_list = JSON.parse(fs.readFileSync('data/coin_list.json'));
 
 
 
-class GetCKCData  {
+class GetCGKData  {
     async ping()
     {
         let data = await CoinGeckoClient.ping();
@@ -80,9 +80,9 @@ class GetCKCData  {
 
 }
 
-const crawCKCData = new GetCKCData();
+let CGK = new GetCGKData();
 
-module.exports = crawCKCData;
+module.exports = CGK;
 
 // detail coin
 

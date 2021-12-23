@@ -1,4 +1,4 @@
-var crawCKCData = require('./controllers/get_data');
+var CGK = require('./controllers/get_data');
 
 
-crawCKCData.fetchCoinList();
+CGK.fetchCoinList();
