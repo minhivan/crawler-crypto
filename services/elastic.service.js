@@ -1,10 +1,61 @@
 'use strict'
 
-var client = require('../config/elastic.config');
+let client = require('../config/elastic.config');
 const fs = require('fs');
 
 class ElasticService {
     constructor(){}
+
+    // check health elasticsearch
+    check_health()
+    {
+        client.cluster.health({}, function (err, resp, status) {
+            console.log("-- Client Health --", resp);
+        });
+    }
+
+    async create_index()
+    {
+        console.log("creating index");
+
+    }
+
+    async create_bulk(index, data)
+    {
+        console.log("indexing");
+        try {
+            const body = data.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
+            const bulkResponse = await client.bulk({ refresh: true, body })
+            console.log(bulkResponse)
+            if (bulkResponse.errors) {
+                const erroredDocuments = []
+                // The items array has the same order of the dataset we just indexed.
+                // The presence of the `error` key indicates that the operation
+                // that we did for the document has failed.
+                bulkResponse.items.forEach((action, i) => {
+                    const operation = Object.keys(action)[0]
+                    if (action[operation].error) {
+                        erroredDocuments.push({
+                            // If the status is 429 it means that you can retry the document,
+                            // otherwise it's very likely a mapping error, and you should
+                            // fix the document before to try it again.
+                            status: action[operation].status,
+                            error: action[operation].error,
+                            operation: body[i * 2],
+                            document: body[i * 2 + 1]
+                        })
+                    }
+                })
+                console.log(erroredDocuments)
+            }
+            const count = await client.count({ index: index })
+            console.log(count)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
     // create index new
     elk_create_index(name) {
         client.indices.create({

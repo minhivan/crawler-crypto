@@ -1,4 +1,7 @@
 var CGKCoin = require('./controllers/coin.controller');
 
 
-CGKCoin.insertNewCoin();
+
+
+CGKCoin.getCoinMarket();
+// CGKCoin.fetchCoinList();
