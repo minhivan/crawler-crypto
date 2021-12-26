@@ -14,19 +14,27 @@ class ElasticService {
         });
     }
 
-    async create_index()
+    async create_index(name)
     {
-        console.log("creating index");
-
+        client.indices.create({
+            index: name
+        }, function (err, resp, status) {
+            if (err) {
+                console.log(err);
+                return false
+            }
+        });
+        return true;
     }
 
     async create_bulk(index, data)
     {
         console.log("indexing");
         try {
-            const body = data.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
+            let body = data.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
             const bulkResponse = await client.bulk({ refresh: true, body })
-            console.log(bulkResponse)
+            console.log(body);
+            //console.log(bulkResponse)
             if (bulkResponse.errors) {
                 const erroredDocuments = []
                 // The items array has the same order of the dataset we just indexed.
@@ -54,6 +62,24 @@ class ElasticService {
             console.log(e)
         }
     }
+
+    async add_document(index, id, data) {
+        client.index({
+            index,
+            id,
+            body: data
+        }, function (err, resp, status) {
+            if (err) {
+                console.log(err)
+                return false
+            }
+        });
+        const count = await client.count({ index: index })
+        console.log(count)
+        return true;
+    }
+
+
 
 
     // create index new
