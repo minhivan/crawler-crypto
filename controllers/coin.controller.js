@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 const fs = require('fs');
 // implement elasticsearch
 const elasticService = require("../services/elastic.service");
-
+const { formatCoinData } = require("../utils/utils")
 
 
 class CGKCoinController {
@@ -13,6 +13,10 @@ class CGKCoinController {
         this.coin_list = fs.existsSync('data/coin_list.json') ? fs.readFileSync('data/coin_list.json') : '[]';
         this.coin_details = fs.readFileSync('data/coin_details.json');
         this.coin_markets = fs.existsSync('data/coin_markets.json') ? fs.readFileSync('data/coin_details.json') : '[]'
+        this.coin_details_index = "cgk_coin_details"
+        this.coin_markets_index = "cgk_coin_markets"
+        this.coin_list_index = "cgk_coin_list"
+        this.coin_tickers_index = "cgk_coin_tickers"
     }
 
     async ping() {
@@ -47,7 +51,7 @@ class CGKCoinController {
             let insert_data = JSON.parse(this.coin_list.toString());
             insert_data = insert_data.filter(index => index);
             //console.log(insert_data);
-            if (insert_data.length) await elasticService.create_bulk('cgk_coin_list', insert_data);
+            if (insert_data.length) await elasticService.create_bulk(this.coin_list_index, insert_data);
             //elasticService.check_health();
         } catch (e) {
             console.log(e);
@@ -72,7 +76,7 @@ class CGKCoinController {
             insert_data = insert_data.filter(item => item);
             console.log("Syncing cgk_coin_market to elastic");
             //console.log(insert_data);
-            if (insert_data.length) await elasticService.create_bulk('cgk_coin_market', insert_data);
+            if (insert_data.length) await elasticService.create_bulk(this.coin_markets_index, insert_data);
 
         } catch (e) {
             console.log(e)
@@ -83,11 +87,36 @@ class CGKCoinController {
     }
 
 
+    // push data to elasticsearch
     async fetchCoinDetails(id, params = {}) {
         try {
-            let coin_list = JSON.parse(this.coin_list.toString());
+            params.tickers = false;
             let response =  await CoinGeckoClient.coins.fetch(id, params);
-            
+            let data = response.data;
+            let formattedData = formatCoinData(data);
+            //console.log(formattedData)
+            //await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+
+        } catch (error) {
+            // console.log(error)
+            return false
+        }
+        return true;
+    }
+
+
+    async syncCoinDetails() {
+        try {
+            let coin_list = JSON.parse(this.coin_list.toString());
+            let items = coin_list.slice(0, 50);
+            for (const value of items) {
+                const i = items.indexOf(value);
+                //console.log('%d: %s', i, value);
+                let id = value.id;
+                // starting sync
+                await this.fetchCoinDetails(id);
+            }
+
             // let items = coin_list.slice(0, 100);
             // let currentDataSet = JSON.parse(this.coin_details.toString());
             // console.log("starting");
@@ -107,33 +136,12 @@ class CGKCoinController {
             //     }
 
             //     //console.log("Save data to coin details");
-                
+
             // });
             // console.log(currentDataSet.length);
             // fs.writeFileSync('data/coin_details.json', JSON.stringify(currentDataSet));
 
 
-        } catch (error) {
-            // console.log(error)
-            return false
-        }
-        return true;
-    }
-
-
-    async syncCoinDetails() {
-        try {
-
-            // map data and insert to db
-            console.log("Starting sync coin details to elastic !");
-            let insert_data = JSON.parse(this.coin_details.toString());
-            //console.log(typeof insert_data);
-            insert_data = insert_data.filter(index => index);
-            
-            console.log(insert_data);
-            console.log("Syncing coin details!");
-            //await elasticService.add_document('cgk_coin_details', )
-            await elasticService.create_bulk('cgk_coin_details', insert_data)
         } catch (e) {
             console.log(e);
             return false;
@@ -172,10 +180,4 @@ class CGKCoinController {
 let CGKCoin = new CGKCoinController();
 
 module.exports = CGKCoin;
-
-// detail coin
-
-
-// market data
-
 

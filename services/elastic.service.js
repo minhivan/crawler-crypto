@@ -64,7 +64,7 @@ class ElasticService {
     }
 
     async add_document(index, id, data) {
-        client.index({
+        await client.index({
             index,
             id,
             body: data

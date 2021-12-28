@@ -3,7 +3,11 @@ var CGKCoin = require('./controllers/coin.controller');
 
 
 
-//CGKCoin.getCoinMarket();
-//CGKCoin.fetchCurrentCoinDetails('bitcoin')
-CGKCoin.syncCoinDetails();
-// CGKCoin.fetchCoinList();
+// //CGKCoin.getCoinMarket();
+// <<<<<<< Updated upstream
+// //CGKCoin.fetchCurrentCoinDetails('bitcoin')
+// CGKCoin.syncCoinDetails();
+// =======
+// CGKCoin.fetchCurrentCoinDetails('bitcoin');
+// >>>>>>> Stashed changes
+// // CGKCoin.fetchCoinList();
