@@ -88,18 +88,19 @@ class CGKCoinController {
 
 
     // push data to elasticsearch
-    async fetchCoinDetails(id, params = {}) {
+    async fetchCoinDetails(id, params = {}, sync = false) {
         try {
             params.tickers = false;
+            await new Promise(resolve => setTimeout(resolve, 1500));
             let response =  await CoinGeckoClient.coins.fetch(id, params);
             let data = response.data;
             let formattedData = formatCoinData(data);
             //console.log(formattedData)
-            //await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
 
         } catch (error) {
-            // console.log(error)
-            return false
+            console.log(error)
+            return false;
         }
         return true;
     }
@@ -108,13 +109,14 @@ class CGKCoinController {
     async syncCoinDetails() {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(0, 50);
+            let items = coin_list.slice(500, 600);
             for (const value of items) {
                 const i = items.indexOf(value);
-                //console.log('%d: %s', i, value);
+                console.log('%d: %s', i);
                 let id = value.id;
                 // starting sync
-                await this.fetchCoinDetails(id);
+                let checking = await this.fetchCoinDetails(id, {}, true);
+                //if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
             }
 
             // let items = coin_list.slice(0, 100);
