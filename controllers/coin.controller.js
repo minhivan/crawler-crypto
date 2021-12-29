@@ -5,14 +5,15 @@ const CoinGeckoClient = new CoinGecko();
 const fs = require('fs');
 // implement elasticsearch
 const elasticService = require("../services/elastic.service");
-const { formatCoinData } = require("../utils/utils")
+const { formatCoinData, testFormatCoinData } = require("../utils/utils")
 
 
 class CGKCoinController {
     constructor() {
         this.coin_list = fs.existsSync('data/coin_list.json') ? fs.readFileSync('data/coin_list.json') : '[]';
         this.coin_details = fs.readFileSync('data/coin_details.json');
-        this.coin_markets = fs.existsSync('data/coin_markets.json') ? fs.readFileSync('data/coin_details.json') : '[]'
+        this.coin_markets = fs.existsSync('data/coin_markets.json') ? fs.readFileSync('data/coin_details.json') : '[]';
+        this.json_test_data = fs.existsSync('data/response.json') ? fs.readFileSync('data/response.json') : '[]'
         this.coin_details_index = "cgk_coin_details"
         this.coin_markets_index = "cgk_coin_markets"
         this.coin_list_index = "cgk_coin_list"
@@ -96,7 +97,7 @@ class CGKCoinController {
             let data = response.data;
             let formattedData = formatCoinData(data);
             //console.log(formattedData)
-            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+            //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
 
         } catch (error) {
             console.log(error)
@@ -105,49 +106,67 @@ class CGKCoinController {
         return true;
     }
 
+    testFetchCoinDetails () {
+        try {
+            const data = JSON.parse(this.json_test_data.toString()).shift();
+            let formattedData = formatCoinData(data);
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+        return true
+    }
 
     async syncCoinDetails() {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(500, 600);
+            let items = coin_list.slice(0, 100);
             for (const value of items) {
                 const i = items.indexOf(value);
-                console.log('%d: %s', i);
+                console.log('%d', i);
                 let id = value.id;
                 // starting sync
                 let checking = await this.fetchCoinDetails(id, {}, true);
                 //if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
             }
 
-            // let items = coin_list.slice(0, 100);
-            // let currentDataSet = JSON.parse(this.coin_details.toString());
-            // console.log("starting");
-            // items.forEach(async function (value, i) {
-            //     console.log('%d: %s', i, value);
-            //     var id = value.id;
-            //     let response =  await CoinGeckoClient.coins.fetch(id, params);
-            //     //console.log(response.code);
-            //     let data = response.data;
-            //     // starting import
-            //     // find index and insert all new documents
-            //     let checking = currentDataSet.find(item => item.id == data.id);
-            //     if (checking) {
-            //         currentDataSet[data.id] = data;
-            //     } else {
-            //         currentDataSet.push(data);
-            //     }
-
-            //     //console.log("Save data to coin details");
-
-            // });
-            // console.log(currentDataSet.length);
-            // fs.writeFileSync('data/coin_details.json', JSON.stringify(currentDataSet));
-
-
         } catch (e) {
             console.log(e);
             return false;
-            //write log here
+        }
+        return true;
+    }
+    
+    async importCoinDetails () {
+        try {
+            let coin_list = JSON.parse(this.coin_list.toString());
+            let items = coin_list.slice(0, 100);
+            let currentDataSet = JSON.parse(this.coin_details.toString());
+            console.log("starting");
+            for (const value of items) {
+                const i = items.indexOf(value);
+                console.log('%d: %s', i, value);
+                var id = value.id;
+                let response =  await CoinGeckoClient.coins.fetch(id, params);
+                //console.log(response.code);
+                let data = response.data;
+                // starting import
+                // find index and insert all new documents
+                let checking = currentDataSet.find(item => item.id == data.id);
+                if (checking) {
+                    currentDataSet[data.id] = data;
+                } else {
+                    currentDataSet.push(data);
+                }
+    
+                //console.log("Save data to coin details");
+    
+            }
+            console.log(currentDataSet.length);
+            fs.writeFileSync('data/coin_details.json', JSON.stringify(currentDataSet));
+        } catch (e) {
+            console.log(e)
+            return false;
         }
         return true;
     }
