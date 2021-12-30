@@ -5,7 +5,7 @@ const CoinGeckoClient = new CoinGecko();
 const fs = require('fs');
 // implement elasticsearch
 const elasticService = require("../services/elastic.service");
-const { formatCoinData, testFormatCoinData } = require("../utils/utils")
+const { formatDataFunc, testFormatCoinData } = require("../utils/utils")
 
 
 class CGKCoinController {
@@ -95,9 +95,9 @@ class CGKCoinController {
             await new Promise(resolve => setTimeout(resolve, 1500));
             let response =  await CoinGeckoClient.coins.fetch(id, params);
             let data = response.data;
-            let formattedData = formatCoinData(data);
+            let formattedData = formatDataFunc('detail', data);
             //console.log(formattedData)
-            //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
 
         } catch (error) {
             console.log(error)
@@ -106,10 +106,14 @@ class CGKCoinController {
         return true;
     }
 
-    testFetchCoinDetails () {
+
+    // test function
+    async testFetchCoinDetails (sync = false) {
         try {
             const data = JSON.parse(this.json_test_data.toString()).shift();
-            let formattedData = formatCoinData(data);
+            let formattedData = formatDataFunc('detail', data)
+            //console.log(formattedData)
+            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
         } catch (e) {
             console.log(e)
             return false
@@ -120,14 +124,14 @@ class CGKCoinController {
     async syncCoinDetails() {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(0, 100);
+            let items = coin_list.slice(0, 400);
             for (const value of items) {
                 const i = items.indexOf(value);
-                console.log('%d', i);
                 let id = value.id;
+                console.log("Sync " + id);
                 // starting sync
                 let checking = await this.fetchCoinDetails(id, {}, true);
-                //if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
+                if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
             }
 
         } catch (e) {
@@ -172,8 +176,20 @@ class CGKCoinController {
     }
 
 
-    async getCoinTickers(id, params = {}) {
-        return CoinGeckoClient.coins.fetchTickers(id, params);
+    async getCoinTickers(id, params = {}, sync = false) {
+        try {
+            const response = await CoinGeckoClient.coins.fetchTickers(id, params);
+            let data = response.data;
+            //console.log(data)
+            let formattedData = formatDataFunc('ticker', data);
+            formattedData.id = id;
+            //console.log(formattedData)
+            if (sync) await elasticService.add_document(this.coin_tickers_index, id, formattedData)
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+        return true
     }
 
     async getHistoricalData(id, params = {}) {

@@ -62,15 +62,13 @@ const COIN_MARKETS = {
 const COIN_TICKERS = {
     id: null,
     name: null,
-    ticker: []
+    tickers: []
 }
 
 const COIN_MARKET_CHART = {
     id: null,
     price: []
 }
-
-
 
 
 module.exports = {

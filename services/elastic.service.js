@@ -69,10 +69,14 @@ class ElasticService {
             id,
             body: data
         }, function (err, resp, status) {
+            if(status) {
+                console.log(status)
+            }
             if (err) {
-                console.log(err)
+                console.log(err.message)
                 return false
             }
+
         });
         const count = await client.count({ index: index })
         console.log(count)
