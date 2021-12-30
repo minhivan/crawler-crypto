@@ -60,26 +60,33 @@ class ElasticService {
             console.log(count)
         } catch (e) {
             console.log(e)
+            return false
         }
+        return true
     }
 
     async add_document(index, id, data) {
-        await client.index({
-            index,
-            id,
-            body: data
-        }, function (err, resp, status) {
-            if(status) {
-                console.log(status)
-            }
-            if (err) {
-                console.log(err.message)
-                return false
-            }
+        try {
+            await client.index({
+                index,
+                id,
+                body: data
+            }, function (err, resp, status) {
+                if(status) {
+                    console.log(status)
+                }
+                if (err) {
+                    console.log(err.message)
+                    return false
+                }
 
-        });
-        const count = await client.count({ index: index })
-        console.log(count)
+            });
+            const count = await client.count({ index: index })
+            console.log(count);
+        } catch (e) {
+            console.log(e)
+            return false
+        }
         return true;
     }
 

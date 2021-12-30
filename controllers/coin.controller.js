@@ -182,8 +182,8 @@ class CGKCoinController {
             let data = response.data;
             //console.log(data)
             let formattedData = formatDataFunc('ticker', data);
+            // add index to formatted data
             formattedData.id = id;
-            //console.log(formattedData)
             if (sync) await elasticService.add_document(this.coin_tickers_index, id, formattedData)
         } catch (e) {
             console.log(e)

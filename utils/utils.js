@@ -10,15 +10,32 @@ const formatDataFunc = (constant, source) => {
         case 'ticker':
             formatData = COIN_TICKERS;
             break;
+            
+        case 'market_chart':
+            formatData = COIN_MARKET_CHART;
+            break;
+            
+        case 'market':
+            formatData = COIN_MARKETS;
+            break;
         default :
             return false;
     }
+    
+    // looping response and reformat
     Object.keys(source).forEach(index => {
         if(index === '' || index == null) delete source[index];
         if(formatData.hasOwnProperty(index)) formatData[index] = clearEmpties(source[index])
     });
-
-    // console.log(formatData['tickers'])
+    
+    //console.log(formatData['tickers'].length)
+    formatData['tickers'].filter(element => {
+        //delete element['converted_last'];
+        delete element['converted_volume'];
+        //delete element['market'];
+        return element;
+    })
+    
     return formatData
 }
 
