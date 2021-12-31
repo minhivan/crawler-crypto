@@ -112,7 +112,7 @@ class CGKCoinController {
         try {
             const data = JSON.parse(this.json_test_data.toString()).shift();
             let formattedData = formatDataFunc('detail', data)
-            //console.log(formattedData)
+            console.log(formattedData)
             if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
         } catch (e) {
             console.log(e)
@@ -193,10 +193,12 @@ class CGKCoinController {
     }
 
     async getHistoricalData(id, params = {}) {
+
         return CoinGeckoClient.coins.fetchTickers(id);
     }
 
     async getCoinMarketChart(id, params = {}) {
+
         return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
     }
 

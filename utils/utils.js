@@ -10,32 +10,38 @@ const formatDataFunc = (constant, source) => {
         case 'ticker':
             formatData = COIN_TICKERS;
             break;
-            
+
         case 'market_chart':
             formatData = COIN_MARKET_CHART;
             break;
-            
+
         case 'market':
             formatData = COIN_MARKETS;
             break;
         default :
             return false;
     }
-    
+
     // looping response and reformat
     Object.keys(source).forEach(index => {
         if(index === '' || index == null) delete source[index];
         if(formatData.hasOwnProperty(index)) formatData[index] = clearEmpties(source[index])
     });
-    
+
     //console.log(formatData['tickers'].length)
-    formatData['tickers'].filter(element => {
-        //delete element['converted_last'];
-        delete element['converted_volume'];
-        //delete element['market'];
-        return element;
-    })
-    
+    // formatData['tickers'].filter(element => {
+    //     //delete element['converted_last'];
+    //     delete element['converted_volume'];
+    //     //delete element['market'];
+    //     return element;
+    // })
+    // if(formatData['market_data']) {
+    //     delete formatData['market_data'].ath_date;
+    //     delete formatData['market_data'].atl_date;
+    //     delete formatData['market_data'].market_cap;
+    //     delete formatData['market_data'].total_volume;
+    // }
+    //console.log(formatData['market_data']);
     return formatData
 }
 
@@ -49,10 +55,11 @@ const clearEmpties = ( source ) => {
     // if source is array => filter empty array
     if(Array.isArray(source)) {
         source = source.filter(element => {
+            if(element === '' || element == null) return null;
             if(typeof element === "object") {
                 Object.keys(element).forEach(key => {
                     if(key === '' || key == null)  delete element[key];
-                    if(element[key] === '' || element[key] == null) element[key] = null
+                    else if (element[key] === '' || element[key] == null) element[key] = null
                 });
                 return element
             }
@@ -71,7 +78,6 @@ const clearEmpties = ( source ) => {
                     if(source[i] === '' || source[i] == null) source[i] = null
                 }
             });
-
         }
     }
     return source;
