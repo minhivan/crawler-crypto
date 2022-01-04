@@ -30,7 +30,7 @@ const COIN_DETAILS = {
     public_interest_stats: {},
     status_updates: null,
     last_updated: [],
-    tickers: []
+    //tickers: []
 };
 
 const COIN_MARKETS = {

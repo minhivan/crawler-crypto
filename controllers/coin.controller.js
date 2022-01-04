@@ -126,7 +126,7 @@ class CGKCoinController {
     async syncCoinDetails() {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(300, 400);
+            let items = coin_list.slice(400, 500);
             for (const value of items) {
                 const i = items.indexOf(value);
                 let id = value.id;

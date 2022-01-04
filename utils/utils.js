@@ -70,6 +70,15 @@ const clearEmpties = ( source ) => {
 }
 
 
+const formatNumber = (number) => {
+    if (Number.isInteger(number)) {
+        number = Math.floor(number).toFixed(6);
+    }
+    
+    return number
+}
+
+
 
 const testFormatCoinData =  (source) => {
     for(let index in source){
