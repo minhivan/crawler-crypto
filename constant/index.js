@@ -5,6 +5,7 @@ const COIN_DETAILS = {
     asset_platform_id: null,
     platforms: {},
     block_time_in_minutes: null,
+    hashing_algorithm: null,
     categories: [],
     public_notice: null,
     additional_notices: [],
@@ -14,6 +15,7 @@ const COIN_DETAILS = {
     image: {},
     country_origin: null,
     genesis_date: null,
+    contract_address: null,
     sentiment_votes_up_percentage: 0,
     sentiment_votes_down_percentage: 0,
     market_cap_rank: 0,
@@ -27,7 +29,8 @@ const COIN_DETAILS = {
     community_data: {},
     public_interest_stats: {},
     status_updates: null,
-    last_updated: []
+    last_updated: [],
+    tickers: []
 };
 
 const COIN_MARKETS = {
@@ -70,10 +73,16 @@ const COIN_MARKET_CHART = {
     price: []
 }
 
+const COIN_LIST = {
+    id: null,
+    symbol: null,
+    name: null
+}
 
 module.exports = {
     COIN_DETAILS,
     COIN_MARKETS,
     COIN_TICKERS,
-    COIN_MARKET_CHART
+    COIN_MARKET_CHART,
+    COIN_LIST
 }

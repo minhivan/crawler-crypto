@@ -50,7 +50,9 @@ class CGKCoinController {
             // map data and insert to db
             console.log("Syncing data to elastic");
             let insert_data = JSON.parse(this.coin_list.toString());
-            insert_data = insert_data.filter(index => index);
+            insert_data = insert_data.filter(index => {
+                return formatDataFunc('coin_list', index)
+            });
             //console.log(insert_data);
             if (insert_data.length) await elasticService.create_bulk(this.coin_list_index, insert_data);
             //elasticService.check_health();
@@ -92,7 +94,7 @@ class CGKCoinController {
     async fetchCoinDetails(id, params = {}, sync = false) {
         try {
             params.tickers = false;
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 5/6*1000));
             let response =  await CoinGeckoClient.coins.fetch(id, params);
             let data = response.data;
             let formattedData = formatDataFunc('detail', data);
@@ -112,7 +114,7 @@ class CGKCoinController {
         try {
             const data = JSON.parse(this.json_test_data.toString()).shift();
             let formattedData = formatDataFunc('detail', data)
-            console.log(formattedData)
+            //console.log(formattedData)
             if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
         } catch (e) {
             console.log(e)
@@ -124,19 +126,19 @@ class CGKCoinController {
     async syncCoinDetails() {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(0, 400);
+            let items = coin_list.slice(300, 400);
             for (const value of items) {
                 const i = items.indexOf(value);
                 let id = value.id;
                 console.log("Sync " + id);
                 // starting sync
-                let checking = await this.fetchCoinDetails(id, {}, true);
-                if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
+                await this.fetchCoinDetails(id, {}, true);
+                // if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
             }
 
         } catch (e) {
             console.log(e);
-            return false;
+            await CGKCoin.fetchCoinDetails(id, {}, true);
         }
         return true;
     }
@@ -205,13 +207,13 @@ class CGKCoinController {
 
 
 
-    //contract
+    // contract
 
     // categories
 
     // exchanges
 
-    //derivatives
+    // derivatives
 
 
 }

@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="51999a57-cbfe-4fc1-8e67-89731f78bc3b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constant/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/constant/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/coin.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/coin.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/coin_list.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/coin_list.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/response.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/response.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/elastic.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/services/elastic.service.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.js" afterDir="false" />
     </list>
@@ -80,7 +78,9 @@
       <workItem from="1640588842477" duration="601000" />
       <workItem from="1640849971910" duration="5996000" />
       <workItem from="1640857480314" duration="5303000" />
-      <workItem from="1640912226156" duration="18059000" />
+      <workItem from="1640912226156" duration="18124000" />
+      <workItem from="1641259131902" duration="4486000" />
+      <workItem from="1641269155832" duration="16441000" />
     </task>
     <servers />
   </component>

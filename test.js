@@ -6,9 +6,10 @@ var CGKCoin = require('./controllers/coin.controller');
 //CGKCoin.getCoinMarket();
 //CGKCoin.syncCoinList();
 
-//CGKCoin.fetchCoinDetails('100man', {}, false)
+//CGKCoin.fetchCoinDetails('bitcoin', {}, true)
 //CGKCoin.syncCoinDetails();
 
 /* Test purpose */
 CGKCoin.testFetchCoinDetails(true);
+//CGKCoin.syncCoinDetails();
 //CGKCoin.getCoinTickers('bitcoin', {}, true)
