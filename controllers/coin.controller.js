@@ -150,7 +150,7 @@ class CGKCoinController {
             const data = JSON.parse(this.json_test_data.toString()).shift();
             let formattedData = formatDataFunc('detail', data)
             //console.log(formattedData)
-            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+            //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
         } catch (e) {
             console.log(e)
             return false
