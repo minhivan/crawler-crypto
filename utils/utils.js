@@ -18,14 +18,16 @@ const formatDataFunc = (constant, source) => {
         case 'market':
             formatData = COIN_MARKETS;
             break;
+
         case 'coin_list':
             formatData = COIN_LIST;
             break;
+
         default :
             return false;
     }
-
     // looping response and reformat
+
     Object.keys(formatData).forEach(index => {
         formatData[index] = clearEmpties(source[index])
     })
@@ -37,6 +39,7 @@ const formatDataFunc = (constant, source) => {
 
 
 const clearEmpties = ( source ) => {
+
     if(source === '' || source == null) {
         return null
     }
@@ -46,8 +49,8 @@ const clearEmpties = ( source ) => {
                 if(element === '' || element == null) return null;
                 if(typeof element === "object") {
                     Object.keys(element).forEach(key => {
-                        if(key === '' || key == null)  delete element[key]
-                        else if (element[key] === '' || element[key] == null) element[key] = null
+                        if (key === '' || key == null)  delete element[key]
+                        if (element[key] === '' || element[key] == null) element[key] = null
                     });
                     return element
                 }
@@ -66,19 +69,24 @@ const clearEmpties = ( source ) => {
         }
     }
 
+    if (Number.isInteger(source)) {
+        source = Math.floor(source).toFixed(6);
+    }
+
+    if (Math.log10(source) > 19) {
+        // o[k] =  Math.floor(o[k]) + 0.0000001;
+        return null
+    }
     return source
 }
 
 
+
+
+// format data for coin ticker
 const formatNumber = (number) => {
-    if (Number.isInteger(number)) {
-        number = Math.floor(number).toFixed(6);
-    }
-    
-    return number
+    return  Math.floor(number).toFixed(6);
 }
-
-
 
 const testFormatCoinData =  (source) => {
     for(let index in source){

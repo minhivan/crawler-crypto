@@ -1,6 +1,6 @@
-var fs = require('fs');
-var request = require('request');
-var amqp = require('amqplib/callback_api');
+let fs = require('fs');
+let request = require('request');
+let amqp = require('amqplib/callback_api');
 require('dotenv').config()
 
 amqp.connect(process.env.amqpUrl, function(error0, connection) {
@@ -11,7 +11,7 @@ amqp.connect(process.env.amqpUrl, function(error0, connection) {
         if (error1) {
             throw error1;
         }
-        var queue = 'task_queue';
+        let queue = 'task_queue';
 
         channel.assertQueue(queue, {
             durable: true
@@ -19,7 +19,7 @@ amqp.connect(process.env.amqpUrl, function(error0, connection) {
         channel.prefetch(1);
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
         channel.consume(queue, function(msg) {
-            var secs = msg.content.toString().split('.').length - 1;
+            let secs = msg.content.toString().split('.').length - 1;
 
             console.log(" [x] Received %s", msg.content.toString());
             setTimeout(function() {

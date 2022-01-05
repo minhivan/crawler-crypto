@@ -30,7 +30,7 @@ const COIN_DETAILS = {
     public_interest_stats: {},
     status_updates: null,
     last_updated: [],
-    //tickers: []
+    tickers: []
 };
 
 const COIN_MARKETS = {
@@ -59,7 +59,15 @@ const COIN_MARKETS = {
     atl_change_percentage: 0,
     atl_date: null,
     roi: null,
-    last_updated: null
+    last_updated: null,
+    sparkline_in_7d: [],
+    price_change_percentage_1h_in_currency: 0,
+    price_change_percentage_24h_in_currency: 0,
+    price_change_percentage_7d_in_currency: 0,
+    price_change_percentage_14d_in_currency: 0,
+    price_change_percentage_30d_in_currency: 0,
+    price_change_percentage_200d_in_currency: 0,
+    price_change_percentage_1y_in_currency: 0
 }
 
 const COIN_TICKERS = {

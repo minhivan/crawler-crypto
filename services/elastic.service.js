@@ -33,8 +33,7 @@ class ElasticService {
         try {
             let body = data.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
             const bulkResponse = await client.bulk({ refresh: true, body })
-            console.log(body);
-            //console.log(bulkResponse)
+            console.log(bulkResponse)
             if (bulkResponse.errors) {
                 const erroredDocuments = []
                 // The items array has the same order of the dataset we just indexed.
@@ -76,10 +75,12 @@ class ElasticService {
                     console.log(err)
                     return false
                 }
-
+                if(resp) {
+                    console.log(resp)
+                }
             });
-            const count = await client.count({ index: index })
-            console.log(count);
+            // const count = await client.count({ index: index })
+            // console.log(count);
         } catch (e) {
             console.log(e)
             return false
