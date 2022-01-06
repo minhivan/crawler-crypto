@@ -81,13 +81,9 @@ const clearEmpties = ( source ) => {
 }
 
 
-const testTransformData = (source, data) => {
-    for (let index in data) {
-        if(source[index] === '' || source[index] == null) data[index] = null
-        if(typeof source !== 'object') {
-        
-        }
-    }
+const testTransformData = (source, to) => {
+    Object.entries(source).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})
+    console.log(source)
 }
 
 

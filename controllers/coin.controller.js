@@ -115,13 +115,15 @@ class CGKCoinController {
     // test fetch coin market
     async testCoinMarket () {
         try {
-            const data = JSON.parse(this.coin_markets.toString()).shift();
+            const data = JSON.parse(this.coin_markets.toString()).shift()
             let formattedData = formatDataFunc('detail', data)
 
 
         } catch (e) {
-
+            console.log(e)
+            return false
         }
+        return true
     }
 
 
@@ -147,7 +149,7 @@ class CGKCoinController {
     // test function
     async testFetchCoinDetails (sync = false) {
         try {
-            const data = JSON.parse(this.json_test_data.toString()).shift();
+            const data = JSON.parse(this.json_test_data.toString()).shift(); // return object
             let formattedData = formatDataFunc('detail', data)
             //console.log(formattedData)
             //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
