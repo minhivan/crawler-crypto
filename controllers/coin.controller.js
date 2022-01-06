@@ -142,7 +142,6 @@ class CGKCoinController {
             console.log(error)
             return false;
         }
-        return true;
     }
 
 
@@ -163,12 +162,21 @@ class CGKCoinController {
     async syncCoinDetails(sync = true) {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(8917);
+            let items = coin_list.slice(10000, 10005);
+            let temp = [];
+            
             for (const value of items) {
+                // if(temp.length > 5) {
+                //     await elasticService.create_bulk(this.coin_details_index, temp)
+                //     temp.length = 0;
+                //     break;
+                // } // refresh temp
                 let id = value.id;
                 console.log("Sync " + id);
                 // starting sync
-                await this.fetchCoinDetails(id, {}, sync);
+                let response =  await this.fetchCoinDetails(id, {}, sync);
+                // temp.push(response);
+
                 // if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
             }
 
