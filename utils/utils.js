@@ -28,11 +28,11 @@ const formatDataFunc = (constant, source) => {
     }
     // looping response and reformat
 
-    // Object.keys(formatData).forEach(index => {
-    //     formatData[index] = clearEmpties(source[index])
-    // })
+    Object.keys(formatData).forEach(index => {
+        formatData[index] = clearEmpties(source[index])
+    })
 
-    testTransformData(source, formatData)
+    // testTransformData(source, formatData)
     return formatData
 }
 
@@ -57,7 +57,7 @@ const clearEmpties = ( source ) => {
                         }
                         if (Math.log10(element[key]) > 19) {
                             // o[k] =  Math.floor(o[k]) + 0.0000001;
-                            return null
+                            element[key] = null
                         }
                     });
                     return element
@@ -82,8 +82,7 @@ const clearEmpties = ( source ) => {
 
 
 const testTransformData = (source, to) => {
-    Object.entries(source).reduce((a,[k,v]) => (v ? (a[k]=v, a) : a), {})
-    console.log(source)
+
 }
 
 

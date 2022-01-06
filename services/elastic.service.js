@@ -55,8 +55,8 @@ class ElasticService {
                 })
                 console.log(erroredDocuments)
             }
-            const count = await client.count({ index: index })
-            console.log(count)
+            // const count = await client.count({ index: index })
+            // console.log(count)
         } catch (e) {
             console.log(e)
             return false
