@@ -54,15 +54,15 @@ class CGKExchangeController {
 	}
 	
 	// get data and store it to json file
-	async fetchAllExchange(per_page, page) {
+	async fetchAllExchange(params, sync = false) {
 		try {
-			const params = {
-				per_page,
-				page
-			}
-			const data = await CoinGeckoClient.exchanges.all(params);
-			console.log(data.data, data.data.length)
-			
+			const response = await CoinGeckoClient.exchanges.all(params)
+			let data = response.data
+			data.forEach(element => {
+				formatDataFunc('exchange', element)
+			})
+
+			if (sync) await elasticService.create_bulk(this.exchange_index, data)
 		} catch (e) {
 			console.log(e)
 			return false
@@ -73,14 +73,23 @@ class CGKExchangeController {
 	// sync data to elastic
 	async syncAllExchange() {
 		try {
+			let params = {
+				per_page: 250,
+				page: 1
+			}
 			// map data and insert to db
-			console.log("Syncing data to elastic")
-			let insert_data = JSON.parse(this.coin_list.toString())
-			
-			
-			
-			if (insert_data.length) await elasticService.create_bulk(this.coin_list_index, insert_data)
-			//elasticService.check_health();
+			let total_exchange = JSON.parse(this.exchange_list.toString()).length
+			let total_page = Math.round(total_exchange / params.per_page )
+
+			for(var i = 1; i <= total_page; i ++ ) {
+				console.log("call api")
+				params.page = i;
+				console.log(params)
+				await this.fetchAllExchange(params, true)
+			}
+
+			//await this.fetchAllExchange(params, true)
+
 		} catch (e) {
 			console.log(e)
 			return false
