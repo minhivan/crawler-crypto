@@ -128,15 +128,16 @@ class CGKCoinController {
 
 
     // push data to elasticsearch
-    async fetchCoinDetails(id, params = {}, sync = false) {
+    async fetchCoinDetails(id, params = {}) {
         try {
+            let response = {};
             params.tickers = true;
-            await new Promise(resolve => setTimeout(resolve, 5/6*1000));
-            let response =  await CoinGeckoClient.coins.fetch(id, params);
-            let data = response.data;
-            let formattedData = formatDataFunc('detail', data);
+            //await new Promise(resolve => setTimeout(resolve, 5/6*1000));
+            response = await CoinGeckoClient.coins.fetch(id, params);
             //console.log(formattedData)
-            if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
+            return await formatDataFunc('detail', response.data);
+            //return response.data
+            //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
 
         } catch (error) {
             console.log(error)
@@ -160,32 +161,40 @@ class CGKCoinController {
     }
 
     async syncCoinDetails(sync = true) {
+        let arr = [];
+
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            let items = coin_list.slice(10000, 10005);
-            let temp = [];
-            
-            for (const value of items) {
-                // if(temp.length > 5) {
-                //     await elasticService.create_bulk(this.coin_details_index, temp)
-                //     temp.length = 0;
-                //     break;
-                // } // refresh temp
-                let id = value.id;
-                console.log("Sync " + id);
+            let items = coin_list.slice(1, 3);
+            for (let value in items) {
+                var id = items[value].id
                 // starting sync
-                let response =  await this.fetchCoinDetails(id, {}, sync);
-                // temp.push(response);
-
-                // if(!checking) setTimeout(function () { CGKCoin.fetchCoinDetails(id, {}, true); }, 60000);
+                let response = await this.fetchCoinDetails(id); // true
+                console.log(response)
+                // arr.push(response);
+                // response.length = 0
+                arr[id] = response
             }
-
+            // fs.writeFileSync('data/coin_details.json', JSON.stringify(temp))
+            console.log(arr)
         } catch (e) {
             console.log(e);
-            await CGKCoin.fetchCoinDetails(id, {}, true);
+            return false
         }
+
         return true;
     }
+    
+    async testSyncCoinDetails () {
+        try {
+            let coin_details = JSON.parse(this.coin_details.toString());
+            await elasticService.create_bulk(this.coin_details_index, coin_details)
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+    }
+    
     
     async importCoinDetails () {
         try {
