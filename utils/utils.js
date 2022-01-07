@@ -1,10 +1,12 @@
-const { COIN_DETAILS, COIN_MARKET_CHART, COIN_TICKERS, COIN_MARKETS, COIN_LIST} = require("../constant")
-
+const { TEST ,COIN_DETAILS, COIN_MARKET_CHART, COIN_TICKERS, COIN_MARKETS, COIN_LIST} = require("../constant")
+let test = TEST;
 const formatDataFunc = (constant, source) => {
-    let formatData = {};
+    var formatData = {};
+
     switch (constant) {
         case 'detail' :
-            formatData = COIN_DETAILS;
+
+            formatData = test;
             break;
 
         case 'ticker':
@@ -76,7 +78,7 @@ const clearEmpties = ( source ) => {
             });
         }
     }
-    
+
     return source
 }
 

@@ -1,6 +1,7 @@
 var CGKCoin = require('./controllers/coin.controller');
 var CGKExchange = require('./controllers/exchange.controller');
 
+
 //CGKCoin.fetchCoinList();
 //CGKCoin.syncCoinList();
 
@@ -8,8 +9,8 @@ var CGKExchange = require('./controllers/exchange.controller');
 //CGKCoin.syncCoinList();
 
 //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
-//CGKCoin.syncCoinDetails();
-
+CGKCoin.syncCoinDetails();
+//CGKCoin.testSyncCoinDetails();
 /* Test purpose */
 //CGKCoin.testFetchCoinDetails(true);
 
@@ -20,4 +21,5 @@ var CGKExchange = require('./controllers/exchange.controller');
 // ========= Exchange ==========
 //CGKExchange.fetchAllExchange(250, 1)
 //CGKExchange.fetchListExchange();
-CGKExchange.syncListExchange();
+//CGKExchange.syncListExchange();
+// CGKExchange.syncAllExchange();
