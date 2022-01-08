@@ -1,13 +1,25 @@
-var CGKCoin = require('./controllers/coin.controller');
+let CGKCoin = require('./controllers/coin.controller');
+let CGKExchange = require('./controllers/exchange.controller')
+let CGKDerivative = require('./controllers/derivatives.controller')
 
 
-CGKCoin.syncCoinDetails();
+// init fetch all data list & create files
+const init = async () => {
+    // fetch coin list
+    await CGKCoin.syncCoinList();
+
+    // fetch exchange list
+    await CGKExchange.syncListExchange();
+
+    // fetch derivatives list
+    // await CGKDerivative.
+
+}
+
+
+init();
+
+
 //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
 
-
-<<<<<<< Updated upstream
-=======
 //CGKCoin.getCoinMarket();
-CGKCoin.fetchCurrentCoinDetails('bitcoin');
-// CGKCoin.fetchCoinList();
->>>>>>> Stashed changes
