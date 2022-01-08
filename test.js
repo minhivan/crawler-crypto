@@ -10,7 +10,10 @@ let CGKDerivative = require('./controllers/derivatives.controller');
 
 //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
 //CGKCoin.syncCoinDetails();
+//CGKCoin.syncBatchCoinDetails();
 //CGKCoin.testSyncCoinDetails();
+
+
 /* Test purpose */
 //CGKCoin.testFetchCoinDetails(true);
 //CGKCoin.testFetchCoinDetails();
@@ -22,10 +25,14 @@ let CGKDerivative = require('./controllers/derivatives.controller');
 //CGKExchange.fetchAllExchange(250, 1)
 //CGKExchange.fetchListExchange();
 //CGKExchange.syncListExchange();
-// CGKExchange.syncAllExchange();
+CGKExchange.syncAllExchange();
 
 //CGKExchange.fetchExchangeDetail('binance')
 
 
 // ========== Derivative ==========
-CGKDerivative.syncDerivativeTickers();
+//CGKDerivative.syncDerivativeTickers();
+// CGKDerivative.fetchDerivativeExchangesList();
+//CGKDerivative.fetchDerivativeExchangeData('bitmex')
+//CGKDerivative.fetchDerivativeAllExchange();
+//CGKDerivative.syncDerivativeAllExchange()

@@ -1,12 +1,6 @@
 var amqp = require('amqplib/callback_api');
 require('dotenv').config()
 
-function test(index){
-    index = 350000+index
-    return 'http://www.imdb.com/title/tt0'+index
-}
-
-
 // amqp.connect(url, function(err, conn) {
 //     conn.createChannel(function(err, ch) {
 //         var q = 'movieUrls';
