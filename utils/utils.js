@@ -1,28 +1,27 @@
-const { TEST ,COIN_DETAILS, COIN_MARKET_CHART, COIN_TICKERS, COIN_MARKETS, COIN_LIST} = require("../constant")
-let test = TEST;
+const { COIN_DETAILS, COIN_MARKET_CHART, COIN_TICKERS, COIN_MARKETS, COIN_LIST} = require("../constant")
+
 const formatDataFunc = (constant, source) => {
-    var formatData = {};
+    var formatData;
 
     switch (constant) {
         case 'detail' :
-
-            formatData = test;
+            formatData = Object.assign({}, COIN_DETAILS);
             break;
 
         case 'ticker':
-            formatData = COIN_TICKERS;
+            formatData = Object.assign({}, COIN_TICKERS);
             break;
 
         case 'market_chart':
-            formatData = COIN_MARKET_CHART;
+            formatData = Object.assign({}, COIN_MARKET_CHART);
             break;
 
         case 'market':
-            formatData = COIN_MARKETS;
+            formatData = Object.assign({}, COIN_MARKETS);
             break;
 
         case 'coin_list':
-            formatData = COIN_LIST;
+            formatData = Object.assign({}, COIN_LIST);
             break;
 
         default :
@@ -83,10 +82,38 @@ const clearEmpties = ( source ) => {
 }
 
 
-const testTransformData = (source, to) => {
+const clean = (object) => {
+    Object
+        .entries(object)
+        .forEach(([k, v]) => {
+            if(k === null || k === '') delete object[k]
+            if (Number.isInteger(v)) {
+                object[k] = + Math.floor(object[k]).toFixed(6);
+            }
 
+            if (Math.log10(v) > 19) {
+                // o[k] =  Math.floor(o[k]) + 0.0000001;
+                delete object[k];
+            }
+
+            if (v === "?" || v === '-') object[k] = null;
+
+            if (
+                v === '' ||
+                v === null ||
+                v === undefined ||
+                v.length === 0
+            ) {
+                if (Array.isArray(object))
+                    object.splice(k);
+            }
+
+            if (v && typeof v === 'object') {
+                clean(v);
+            }
+        });
+    return object;
 }
-
 
 
 
@@ -128,4 +155,4 @@ const testFormatCoinData =  (source) => {
 }
 
 
-module.exports = { formatDataFunc , testFormatCoinData }
+module.exports = { formatDataFunc , testFormatCoinData, clean }

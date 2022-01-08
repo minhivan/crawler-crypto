@@ -9,11 +9,11 @@ var CGKExchange = require('./controllers/exchange.controller');
 //CGKCoin.syncCoinList();
 
 //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
-CGKCoin.syncCoinDetails();
+//CGKCoin.syncCoinDetails();
 //CGKCoin.testSyncCoinDetails();
 /* Test purpose */
 //CGKCoin.testFetchCoinDetails(true);
-
+CGKCoin.testFetchCoinDetails();
 //CGKCoin.syncCoinDetails();
 //CGKCoin.getCoinTickers('bitcoin', {}, true)
 
