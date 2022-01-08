@@ -10,9 +10,9 @@ const { formatDataFunc, cleanObject, clean} = require("../utils/utils")
 
 class CGKCoinController {
     constructor() {
-        this.coin_list = fs.existsSync('data/coin_list.json') ? fs.readFileSync('data/coin_list.json') : '[]';
-        this.coin_details = fs.readFileSync('data/coin_details.json');
-        this.coin_markets = fs.existsSync('data/coin_markets.json') ? fs.readFileSync('data/coin_details.json') : '[]';
+        this.coin_list = fs.existsSync('data/coin/coin_list.json') ? fs.readFileSync('data/coin/coin_list.json') : '[]';
+        this.coin_details = fs.readFileSync('data/coin/coin_details.json');
+        this.coin_markets = fs.existsSync('data/coin/coin_markets.json') ? fs.readFileSync('data/coin/coin_details.json') : '[]';
         this.json_test_response = fs.existsSync('data/response.json') ? fs.readFileSync('data/response.json') : '[]'
         this.coin_details_index = "cgk_coin_details"
         this.coin_markets_index = "cgk_coin_markets"
@@ -33,7 +33,7 @@ class CGKCoinController {
         try {
             const data = await CoinGeckoClient.coins.list()
             if (data.data.length) {
-                fs.writeFileSync('data/coin_list.json', JSON.stringify(data.data))
+                fs.writeFileSync('data/coin/coin_list.json', JSON.stringify(data.data))
                 console.log('total coin are ' + data.data.length + ' elements.')
             }
 
@@ -49,6 +49,7 @@ class CGKCoinController {
     async syncCoinList() {
         try {
             // map data and insert to db
+            await this.fetchCoinList()
             console.log("Syncing data to elastic")
             let insert_data = JSON.parse(this.coin_list.toString())
             insert_data = insert_data.filter(item => {
@@ -118,7 +119,6 @@ class CGKCoinController {
             const data = JSON.parse(this.coin_markets.toString()).shift()
             //let formattedData = formatDataFunc('detail', data)//
 
-<<<<<<< Updated upstream
             let dataClean = clean(data);
             console.log(dataClean)
         } catch (e) {
@@ -126,20 +126,6 @@ class CGKCoinController {
             return false
         }
         return true
-=======
-    async fetchCurrentCoinDetails(id, params = {})
-    {
-        try {
-
-            let response = await CoinGeckoClient.coins.fetch(id, params);
-            console.log(response.data);
-
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-        return true;
->>>>>>> Stashed changes
     }
 
 
@@ -247,7 +233,7 @@ class CGKCoinController {
     
             }
             console.log(currentDataSet.length);
-            fs.writeFileSync('data/coin_details.json', JSON.stringify(currentDataSet));
+            fs.writeFileSync('data/coin/coin_details.json', JSON.stringify(currentDataSet));
         } catch (e) {
             console.log(e)
             return false;
