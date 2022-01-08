@@ -55,21 +55,20 @@ class CGKExchangeController {
 	}
 	
 	// get data and store it to json file
-	async fetchAllExchange(params, sync = false) {
+	async fetchAllExchange(params) {
 		try {
 			const response = await CoinGeckoClient.exchanges.all(params)
 			let data = response.data
-			data.forEach(element => {
-				// formatDataFunc('exchange', element)
-				clean(element)
-			})
-
-			if (sync) await elasticService.create_bulk(this.exchange_index, data)
+			data = data.filter(element => clean(element));
+			// data.forEach(element => {
+			// 	// formatDataFunc('exchange', element)
+			// 	clean(element)
+			// })
+			return data;
 		} catch (e) {
 			console.log(e)
 			return false
 		}
-		return true
 	}
 	
 	// sync data to elastic
@@ -87,7 +86,8 @@ class CGKExchangeController {
 				console.log("call api")
 				params.page = i;
 				console.log(params)
-				await this.fetchAllExchange(params, true)
+				let data = await this.fetchAllExchange(params)
+				await elasticService.create_bulk(this.exchange_index, data)
 			}
 
 			//await this.fetchAllExchange(params, true)
