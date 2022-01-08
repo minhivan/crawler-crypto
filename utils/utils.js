@@ -86,7 +86,8 @@ const clean = (object) => {
     Object
         .entries(object)
         .forEach(([k, v]) => {
-            if(k === null || k === '') delete object[k]
+            if(k === null || k.length === 0) delete object[k]
+
             if (Number.isInteger(v)) {
                 object[k] = + Math.floor(object[k]).toFixed(6);
             }
@@ -99,7 +100,6 @@ const clean = (object) => {
             if (v === "?" || v === '-') object[k] = null;
 
             if (
-                v === '' ||
                 v === null ||
                 v === undefined ||
                 v.length === 0
