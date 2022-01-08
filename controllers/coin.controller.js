@@ -185,7 +185,7 @@ class CGKCoinController {
     async syncBatchCoinDetails () {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            coin_list = coin_list.slice(4922);
+            coin_list = coin_list.slice(5221);
             let arr = [];
             for (const value in coin_list) {
                 if(arr.length === 50) {
