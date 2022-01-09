@@ -13,7 +13,7 @@ class CGKExchangeController {
 		this.exchange_list = fs.existsSync('data/exchange/exchange_list.json') ? fs.readFileSync('data/exchange/exchange_list.json') : '[]';
 		this.exchange_list_index = "cgk_exchange_list"
 		this.exchange_index = "cgk_exchange"
-		this.exchange_detail_index = "cgk_exchange_detail"
+		this.exchange_detail_index = "cgk_exchange_details"
 	}
 	
 	async ping() {
@@ -74,6 +74,7 @@ class CGKExchangeController {
 	// sync data to elastic
 	async syncAllExchange() {
 		try {
+			await this.syncListExchange();
 			let params = {
 				per_page: 250,
 				page: 1
@@ -100,34 +101,34 @@ class CGKExchangeController {
 		return true
 	}
 
-	async fetchExchangeDetail(id, params = {}) {
+	async fetchExchangeDetail(id) {
 		try {
-			params.tickers = true;
 			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
 			let response = await CoinGeckoClient.exchanges.fetch(id);
 			// return formatDataFunc('detail', response.data);
-			return clean(response.data)
+			let data = clean(response.data)
+			data.id = id
+			return data
 		} catch (error) {
 			console.log(error)
 			return false;
 		}
 	}
 
-
-	async syncExchangeDetails() {
-
+	
+	async syncBatchExchangeDetails() {
 		try {
-			let coin_list = JSON.parse(this.exchange_list.toString());
-			coin_list = coin_list.slice(4899);
+			let exchange_list = JSON.parse(this.exchange_list.toString());
+			exchange_list = exchange_list.slice(220);
 			let arr = [];
-
-			for (const value in coin_list) {
-				if(arr.length === 50) {
+			
+			for (const value in exchange_list) {
+				if(arr.length === 10) {
 					console.log("Bulk array to elastic")
 					await elasticService.create_bulk(this.exchange_detail_index, arr)
 					arr.length = 0;
 				}
-				const id = coin_list[value].id
+				const id = exchange_list[value].id
 				console.log("Syncing " + id);
 				// starting sync
 				let response = await this.fetchExchangeDetail(id); // true
@@ -137,10 +138,47 @@ class CGKExchangeController {
 			console.log(e);
 			return false
 		}
+		
+		return true;
+	}
+	
+	
+	async syncExchangeDetails() {
+		try {
+			let exchange_list = JSON.parse(this.exchange_list.toString());
+			// exchange_list = exchange_list.slice();
+			let arr = [];
+
+			for (const value in exchange_list) {
+				const id = exchange_list[value].id
+				console.log("Syncing " + id);
+				// starting sync
+				let response = await this.fetchExchangeDetail(id); // true
+				await elasticService.add_document(this.exchange_detail_index, id, response)
+				
+			}
+		} catch (e) {
+			console.log(e);
+			return false
+		}
 
 		return true;
 	}
 
+	
+	async testSyncExchangeDetails (id) {
+		try {
+			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
+			let response = await CoinGeckoClient.exchanges.fetch(id);
+			// return formatDataFunc('detail', response.data);
+			let data = clean(response.data)
+			data.id = id
+			await elasticService.add_document(this.exchange_detail_index, id, data)
+		} catch (error) {
+			console.log(error)
+			return false;
+		}
+	}
 }
 
 let CGKExchange = new CGKExchangeController();
