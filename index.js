@@ -12,8 +12,8 @@ const init = async () => {
     await CGKExchange.syncListExchange();
 
     // fetch derivatives list
-    // await CGKDerivative.
-
+    await CGKDerivative.syncDerivativeAllExchange()
+    
 }
 
 
