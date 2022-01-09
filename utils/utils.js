@@ -89,7 +89,7 @@ const clean = (object) => {
             if(k === null || k.length === 0) delete object[k]
 
             if (Number.isInteger(v)) {
-                object[k] = + Math.floor(object[k]).toFixed(6);
+                object[k] = + Math.floor(v).toFixed(6);
             }
 
             if (Math.log10(v) > 19) {
