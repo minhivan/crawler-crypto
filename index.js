@@ -3,6 +3,13 @@ let CGKExchange = require('./controllers/exchange.controller')
 let CGKDerivative = require('./controllers/derivatives.controller')
 
 
+process.argv.forEach(function (val, index, array) {
+
+});
+
+
+
+
 // init fetch all data list & create files
 const init = async () => {
     // fetch coin list
@@ -16,10 +23,12 @@ const init = async () => {
     
 }
 
-
-init();
+// CGKExchange.syncExchangeDetails();
+CGKCoin.syncBatchCoinDetails();
+// init();
 
 
 //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
 
 //CGKCoin.getCoinMarket();
+
