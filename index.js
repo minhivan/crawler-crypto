@@ -22,6 +22,7 @@ process.argv.forEach(async function (val, index, array) {
     switch (val) {
         case "sync_coin_detail":
             await CGKCoin.syncBatchCoinDetails();
+            await new Promise(resolve => setTimeout(resolve, 600000*6))
             break;
         case "sync_exchange_detail":
             await CGKExchange.syncBatchExchangeDetails();
@@ -34,7 +35,7 @@ process.argv.forEach(async function (val, index, array) {
             break;
         case "coin_market":
             await CGKCoin.syncCoinMarket(250);
-            await new Promise(resolve => setTimeout(resolve, 600000*3))
+            await new Promise(resolve => setTimeout(resolve, 600000*6))
             break;
         case "init":
             await init();
