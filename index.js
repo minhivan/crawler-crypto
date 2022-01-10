@@ -7,10 +7,10 @@ let CGKDerivative = require('./controllers/derivatives.controller')
 // init fetch all data list & create files
 const init = async () => {
     // fetch coin list
-    await CGKCoin.fetchCoinList();
+    await CGKCoin.syncCoinList();
 
     // fetch exchange list
-    await CGKExchange.fetchListExchange();
+    await CGKExchange.syncListExchange();
 
     // fetch derivatives list
     await CGKDerivative.fetchDerivativeExchangesList()
@@ -28,6 +28,13 @@ process.argv.forEach(async function (val, index, array) {
             break;
         case "sync_derivative_detail":
             await CGKDerivative.syncDerivativeAllExchange();
+            break;
+        case "exchange_rates":
+            await CGKExchange.syncExchangeRates();
+            break;
+        case "coin_market":
+            await CGKCoin.syncCoinMarket(250);
+            await new Promise(resolve => setTimeout(resolve, 600000*3))
             break;
         case "init":
             await init();

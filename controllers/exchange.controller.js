@@ -11,9 +11,12 @@ const { formatDataFunc, testFormatCoinData, clean} = require("../utils/utils")
 class CGKExchangeController {
 	constructor() {
 		this.exchange_list = fs.existsSync('data/exchange/exchange_list.json') ? fs.readFileSync('data/exchange/exchange_list.json') : '[]';
+		this.exchange_rates = fs.existsSync('data/exchange/exchange_rates.json') ? fs.readFileSync('data/exchange/exchange_rates.json') : '[]';
+
 		this.exchange_list_index = "cgk_exchange_list"
 		this.exchange_index = "cgk_exchange"
 		this.exchange_detail_index = "cgk_exchange_details"
+		this.exchange_rates_index = "cgk_exchange_rates"
 	}
 	
 	async ping() {
@@ -129,7 +132,7 @@ class CGKExchangeController {
 				let response = await this.fetchExchangeDetail(id); // true
 				arr.push(response)
 
-				if(arr.length === batch_query || value === exchange_list.length - 1) {
+				if(arr.length === batch_query || value == exchange_list.length - 1) {
 					console.log("Bulk array to elastic")
 					await elasticService.create_bulk(this.exchange_detail_index, arr)
 					arr.length = 0;
@@ -177,6 +180,40 @@ class CGKExchangeController {
 		} catch (error) {
 			console.log(error)
 			return false;
+		}
+	}
+
+
+	async fetchExchangeRates () {
+		try {
+			const data = await CoinGeckoClient.exchangeRates.all();
+			fs.writeFileSync('data/exchange/exchange_rates.json', JSON.stringify(data.data.rates))
+			// console.log('total exchange rate are ' + data.data.length + ' elements.')
+
+		} catch (e) {
+			console.log(e)
+			return false
+		}
+		return true
+	}
+
+
+	async syncExchangeRates () {
+		try {
+			// map data and insert to db
+			await this.fetchExchangeRates()
+			console.log("Syncing data to elastic")
+			let insert_data = JSON.parse(this.exchange_rates.toString())
+			let format_data = [];
+			for (let [key, value] of Object.entries(insert_data)) {
+				value.id = key;
+				format_data.push(value);
+			}
+
+			await elasticService.create_bulk(this.exchange_rates_index, format_data)
+		} catch (e) {
+			console.log(e)
+			return false
 		}
 	}
 }

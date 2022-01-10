@@ -27,13 +27,13 @@ let CGKDerivative = require('./controllers/derivatives.controller');
 //CGKExchange.syncListExchange();
 //CGKExchange.syncAllExchange();
 //CGKExchange.syncExchangeDetails();
-CGKExchange.syncBatchExchangeDetails();
+//CGKExchange.syncBatchExchangeDetails();
 //CGKExchange.testSyncExchangeDetails('binance')
-
+CGKExchange.syncExchangeRates();
 
 // ========== Derivative ==========
 //CGKDerivative.syncDerivativeTickers();
-// CGKDerivative.fetchDerivativeExchangesList();
+//CGKDerivative.fetchDerivativeExchangesList();
 //CGKDerivative.fetchDerivativeExchangeData('bitmex')
 //CGKDerivative.fetchDerivativeAllExchange();
 //CGKDerivative.syncDerivativeAllExchange()

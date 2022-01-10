@@ -64,7 +64,7 @@ class CGKCoinController {
     }
 
     // fetch coin market with page
-    async fetchCoinMarket(per_page= 250, page, sync = false) {
+    async fetchCoinMarket(per_page= 250, page) {
         let currency = 'usd',
             obj = {
                 per_page,
@@ -78,17 +78,13 @@ class CGKCoinController {
             await new Promise(resolve => setTimeout(resolve, 5/6*1000))
             let response = await CoinGeckoClient.coins.markets(obj)
             let insert_data = response.data
-            insert_data = insert_data.filter(item => {
-                return formatDataFunc('market', item)
-            });
-
-            if (sync) await elasticService.create_bulk(this.coin_markets_index, insert_data)
+            insert_data = insert_data.filter(item => clean(item));
+            return insert_data;
 
         } catch (e) {
             console.log(e)
             return false
         }
-        return true;
 
     }
     
@@ -109,7 +105,7 @@ class CGKCoinController {
     
     
     // sync coin market data to elastic
-    async syncCoinMarket(per_page, sync = false) {
+    async syncCoinMarket(per_page) {
         try {
             let total_coin = JSON.parse(this.coin_list.toString()).length
             let total_page = Math.round(total_coin / per_page )
@@ -117,7 +113,8 @@ class CGKCoinController {
             let x = 1;
             while (x <= total_page) {
                 console.log("Syncing page " + x)
-                await this.fetchCoinMarket(per_page, x, sync)
+                let data = await this.fetchCoinMarket(per_page, x)
+                await elasticService.create_bulk(this.coin_markets_index, data)
                 x++
             }
         } catch (e) {
@@ -184,7 +181,7 @@ class CGKCoinController {
     async syncBatchCoinDetails () {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            coin_list = coin_list.slice(8762);
+            //coin_list = coin_list.slice(12284);
             let arr = [];
             let batch_query = 50;
             for (const value in coin_list) {
@@ -193,8 +190,8 @@ class CGKCoinController {
                 // starting sync
                 let response = await this.fetchCoinDetails(id); // true
                 arr.push(response)
-
-                if(arr.length === batch_query || value === coin_list.length - 1) {
+                console.log(typeof value,typeof (coin_list.length - 1))
+                if(arr.length === batch_query || value == (coin_list.length - 1)) {
                     console.log("Bulk array to elastic")
                     await elasticService.create_bulk(this.coin_details_index, arr)
                     arr.length = 0;
@@ -279,6 +276,9 @@ class CGKCoinController {
 
         return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
     }
+
+
+
 }
 
 let CGKCoin = new CGKCoinController();
