@@ -116,23 +116,24 @@ class CGKExchangeController {
 	}
 
 	
-	async syncBatchExchangeDetails() {
+	async syncBatchExchangeDetails(batch_query) {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
-			exchange_list = exchange_list.slice(220);
+			//exchange_list = exchange_list.slice(220);
 			let arr = [];
-			
+			let batch_query = 50;
 			for (const value in exchange_list) {
-				if(arr.length === 10) {
-					console.log("Bulk array to elastic")
-					await elasticService.create_bulk(this.exchange_detail_index, arr)
-					arr.length = 0;
-				}
 				const id = exchange_list[value].id
 				console.log("Syncing " + id);
 				// starting sync
 				let response = await this.fetchExchangeDetail(id); // true
 				arr.push(response)
+
+				if(arr.length === batch_query || value === exchange_list.length - 1) {
+					console.log("Bulk array to elastic")
+					await elasticService.create_bulk(this.exchange_detail_index, arr)
+					arr.length = 0;
+				}
 			}
 		} catch (e) {
 			console.log(e);
@@ -146,16 +147,15 @@ class CGKExchangeController {
 	async syncExchangeDetails() {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
-			// exchange_list = exchange_list.slice();
-			let arr = [];
+			exchange_list = exchange_list.slice(220)
 
 			for (const value in exchange_list) {
 				const id = exchange_list[value].id
 				console.log("Syncing " + id);
 				// starting sync
-				let response = await this.fetchExchangeDetail(id); // true
+				let response = await this.fetchExchangeDetail(id) // true
 				await elasticService.add_document(this.exchange_detail_index, id, response)
-				
+
 			}
 		} catch (e) {
 			console.log(e);
