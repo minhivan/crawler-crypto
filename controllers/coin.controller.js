@@ -190,7 +190,6 @@ class CGKCoinController {
                 // starting sync
                 let response = await this.fetchCoinDetails(id); // true
                 arr.push(response)
-                console.log(typeof value,typeof (coin_list.length - 1))
                 if(arr.length === batch_query || value == (coin_list.length - 1)) {
                     console.log("Bulk array to elastic")
                     await elasticService.create_bulk(this.coin_details_index, arr)
