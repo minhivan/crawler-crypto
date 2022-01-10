@@ -13,18 +13,20 @@ process.argv.forEach(function (val, index, array) {
 // init fetch all data list & create files
 const init = async () => {
     // fetch coin list
-    await CGKCoin.syncCoinList();
+    await CGKCoin.fetchCoinList();
 
     // fetch exchange list
-    await CGKExchange.syncListExchange();
+    await CGKExchange.fetchListExchange();
 
     // fetch derivatives list
-    await CGKDerivative.syncDerivativeAllExchange()
+    await CGKDerivative.fetchDerivativeExchangesList()
     
 }
 
+init();
+
 // CGKExchange.syncExchangeDetails();
-CGKCoin.syncBatchCoinDetails();
+// CGKCoin.syncBatchCoinDetails();
 // init();
 
 
