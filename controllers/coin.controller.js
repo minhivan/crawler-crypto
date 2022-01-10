@@ -148,7 +148,6 @@ class CGKCoinController {
             const data = JSON.parse(this.coin_details.toString()).shift(); // return object
             // let formattedData = formatDataFunc('detail', data)
             //let response = await this.fetchCoinDetails('ysl-io');
-
             //console.log(formattedData)
             let cleanData = clean(data['market_data'])
             console.log(cleanData)
@@ -185,19 +184,21 @@ class CGKCoinController {
     async syncBatchCoinDetails () {
         try {
             let coin_list = JSON.parse(this.coin_list.toString());
-            coin_list = coin_list.slice(5221);
+            coin_list = coin_list.slice(8762);
             let arr = [];
+            let batch_query = 50;
             for (const value in coin_list) {
-                if(arr.length === 50) {
-                    console.log("Bulk array to elastic")
-                    await elasticService.create_bulk(this.coin_details_index, arr)
-                    arr.length = 0;
-                }
                 const id = coin_list[value].id
                 console.log("Syncing " + id);
                 // starting sync
                 let response = await this.fetchCoinDetails(id); // true
                 arr.push(response)
+
+                if(arr.length === batch_query || value === coin_list.length - 1) {
+                    console.log("Bulk array to elastic")
+                    await elasticService.create_bulk(this.coin_details_index, arr)
+                    arr.length = 0;
+                }
             }
             // fs.writeFileSync('data/coin_details.json', JSON.stringify(temp))
         } catch (e) {
@@ -240,9 +241,7 @@ class CGKCoinController {
                 } else {
                     currentDataSet.push(data);
                 }
-    
                 //console.log("Save data to coin details");
-    
             }
             console.log(currentDataSet.length);
             fs.writeFileSync('data/coin/coin_details.json', JSON.stringify(currentDataSet));
@@ -275,11 +274,11 @@ class CGKCoinController {
         return CoinGeckoClient.coins.fetchTickers(id);
     }
 
+
     async getCoinMarketChart(id, params = {}) {
 
         return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
     }
-
 }
 
 let CGKCoin = new CGKCoinController();
