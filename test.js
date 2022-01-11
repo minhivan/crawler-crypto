@@ -27,7 +27,7 @@ let CGKDerivative = require('./controllers/derivatives.controller');
 //CGKExchange.syncListExchange();
 //CGKExchange.syncAllExchange();
 //CGKExchange.syncExchangeDetails();
-//CGKExchange.syncBatchExchangeDetails();
+//CGKExchange.syncBatchExchangeDetails(50);
 //CGKExchange.testSyncExchangeDetails('binance')
 CGKExchange.syncExchangeRates();
 
