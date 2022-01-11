@@ -16,44 +16,79 @@ const init = async () => {
 }
 
 
-process.argv.forEach(async function (val, index, array) {
-    switch (val) {
-        case "sync_coin_detail":
-            await CGKCoin.syncBatchCoinDetails(25);
-            break;
+// process.argv.forEach(async function (val, index, array) {
+//     switch (val) {
+//         case "sync_coin_detail":
+//             await CGKCoin.syncBatchCoinDetails(25);
+//             break;
+//
+//         case "sync_coin_market":
+//             await CGKCoin.syncCoinMarket(50);
+//             await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+//             break;
+//
+//         case "sync_exchange_detail":
+//             await CGKExchange.syncBatchExchangeDetails(50);
+//             await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+//             break;
+//
+//         case "sync_derivative_detail":
+//             await CGKDerivative.syncDerivativeAllExchange();
+//             break;
+//
+//         case "sync_exchange_rates":
+//             await CGKExchange.syncExchangeRates();
+//             await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+//
+//             break;
+//
+//         case "test":
+//             console.log("asdadasdad");
+//             break;
+//
+//
+//         case "init":
+//             await init();
+//     }
+// });
 
-        case "sync_coin_market":
-            await CGKCoin.syncCoinMarket(50);
-            // await new Promise(resolve => setTimeout(resolve, 1000*60*15))
-            break;
 
-        case "sync_exchange_detail":
-            await CGKExchange.syncBatchExchangeDetails(50);
-            // await new Promise(resolve => setTimeout(resolve, 1000*60*15))
-            break;
+(async function () {
+    for await (let val of process.argv) {
+        switch (val) {
+            case "sync_coin_detail":
+                await CGKCoin.syncBatchCoinDetails(25);
+                break;
 
-        case "sync_derivative_detail":
-            await CGKDerivative.syncDerivativeAllExchange();
-            break;
+            case "sync_coin_market":
+                await CGKCoin.syncCoinMarket(50);
+                await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+                break;
 
-        case "sync_exchange_rates":
-            await CGKExchange.syncExchangeRates();
-            break;
+            case "sync_exchange_detail":
+                await CGKExchange.syncBatchExchangeDetails(50);
+                await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+                break;
 
-        case "test":
-            console.log("asdadasdad");
-            break;
+            case "sync_derivative_detail":
+                await CGKDerivative.syncDerivativeAllExchange();
+                break;
 
+            case "sync_exchange_rates":
+                await CGKExchange.syncExchangeRates();
+                await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
+                break;
 
-        case "init":
-            await init();
+            case "test":
+                console.log("Test case ");
+                await new Promise(resolve => setTimeout(resolve, 1000*10)) // wait for another function setup
+                break;
+
+            case "init":
+                await init();
+                break;
+        }
     }
-    await new Promise(resolve => setTimeout(resolve, 1000*3)) // wait for another function setup
-});
+})()
 
-
-// CGKExchange.syncExchangeDetails();
-// CGKCoin.syncBatchCoinDetails();
-//CGKCoin.fetchCoinDetails('bitcoin', {}, true)
-//CGKCoin.getCoinMarket();
 
