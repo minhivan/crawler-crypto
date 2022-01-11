@@ -99,10 +99,10 @@ class CGKDerivativeController {
 		}
 	}
 	
-	async syncDerivativeAllExchange () {
+	async syncDerivativeAllExchange (per_page = 100) {
 		try {
 			let params = {
-				per_page: 100,
+				per_page,
 				page: 1
 			}
 			let response = await this.fetchDerivativeAllExchange(params);
