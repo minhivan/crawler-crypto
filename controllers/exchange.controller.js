@@ -226,7 +226,7 @@ class CGKExchangeController {
 			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
 			const response = await CoinGeckoClient.exchanges.fetchTickers(id, params)
 			// console.log(JSON.stringify(response.data).length)
-			return clean(response.data.tickers)
+			return clean(response.data)
 		} catch (e) {
 			console.log(e)
 			return false
@@ -241,22 +241,22 @@ class CGKExchangeController {
 
 			var data, i = 1;
 			var import_data = {
-				id: 'binance',
+				id: 'okex',
 				tickers : []
 			}
 
 			do {
-				data = await this.fetchExchangeTicker('binance', {page: i})
-				console.log(data.length)
-				import_data.tickers.push(...data)
+				data = await this.fetchExchangeTicker('okex', {page: i})
+				// console.log(data.length)
+				import_data.tickers.push(...data.tickers)
 				i++;
 			} while (data.length  > 0)
 
 
 			// console.log(import_data)
 
-			await elasticService.add_document(this.exchange_tickers_index, import_data.id, import_data)
-
+			//await elasticService.add_document(this.exchange_tickers_index, import_data.id, import_data)
+			await elasticService.create_bulk(this.exchange_tickers_index, [import_data])
 			// for (const value in exchange_list) {
 			// 	const id = exchange_list[value].id
 			// 	console.log("Syncing " + id);

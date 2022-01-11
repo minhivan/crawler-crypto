@@ -31,7 +31,10 @@ class ElasticService {
     {
         console.log("indexing " + index);
         try {
-            let body = data.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
+            let body = data.flatMap(doc => {
+                console.log(doc);
+                //return [{ index: { _index: index, _id: doc._id ?? doc.id } }, doc]
+            })
             const bulkResponse = await client.bulk({ refresh: true, body })
             console.log(bulkResponse)
             if (bulkResponse.errors) {
