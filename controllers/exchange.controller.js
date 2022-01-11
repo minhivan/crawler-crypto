@@ -119,12 +119,11 @@ class CGKExchangeController {
 	}
 
 	
-	async syncBatchExchangeDetails(batch_query) {
+	async syncBatchExchangeDetails(batch_query = 50) {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
 			//exchange_list = exchange_list.slice(220);
 			let arr = [];
-			let batch_query = 50;
 			for (const value in exchange_list) {
 				const id = exchange_list[value].id
 				console.log("Syncing " + id);
