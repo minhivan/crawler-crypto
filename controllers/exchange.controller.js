@@ -17,13 +17,15 @@ class CGKExchangeController {
 		this.exchange_index = "cgk_exchange"
 		this.exchange_detail_index = "cgk_exchange_details"
 		this.exchange_rates_index = "cgk_exchange_rates"
+		this.exchange_tickers_index = "cgk_exchange_tickers"
 	}
 	
 	async ping() {
 		let data = await CoinGeckoClient.ping();
 		console.log(data);
 	};
-	
+
+	// Fetch list exchange
 	async fetchListExchange () {
 		try {
 			const data = await CoinGeckoClient.exchanges.list();
@@ -36,7 +38,8 @@ class CGKExchangeController {
 		}
 		return true
 	}
-	
+
+	// Sync list exchange
 	async syncListExchange() {
 		try {
 			await this.fetchListExchange();
@@ -104,6 +107,7 @@ class CGKExchangeController {
 		return true
 	}
 
+	// Fetch exchange details
 	async fetchExchangeDetail(id) {
 		try {
 			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
@@ -118,7 +122,7 @@ class CGKExchangeController {
 		}
 	}
 
-	
+	// Sync batch exchange details
 	async syncBatchExchangeDetails(batch_query = 50) {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
@@ -145,7 +149,7 @@ class CGKExchangeController {
 		return true;
 	}
 	
-	
+	// Sync exchange details
 	async syncExchangeDetails() {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
@@ -167,8 +171,8 @@ class CGKExchangeController {
 		return true;
 	}
 
-	
-	async testSyncExchangeDetails (id) {
+	// Test sync exchange details
+	async testSyncExchangeDetails(id) {
 		try {
 			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
 			let response = await CoinGeckoClient.exchanges.fetch(id);
@@ -182,8 +186,8 @@ class CGKExchangeController {
 		}
 	}
 
-
-	async fetchExchangeRates () {
+	// Fetch exchange rates
+	async fetchExchangeRates() {
 		try {
 			const data = await CoinGeckoClient.exchangeRates.all();
 			fs.writeFileSync('data/exchange/exchange_rates.json', JSON.stringify(data.data.rates))
@@ -196,8 +200,8 @@ class CGKExchangeController {
 		return true
 	}
 
-
-	async syncExchangeRates () {
+	// Sync exchange rates
+	async syncExchangeRates() {
 		try {
 			// map data and insert to db
 			await this.fetchExchangeRates()
@@ -215,6 +219,63 @@ class CGKExchangeController {
 			return false
 		}
 	}
+
+	// Fetch exchange tickers
+	async fetchExchangeTicker(id, params = {}) {
+		try {
+			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
+			const response = await CoinGeckoClient.exchanges.fetchTickers(id, params)
+			// console.log(JSON.stringify(response.data).length)
+			return clean(response.data.tickers)
+		} catch (e) {
+			console.log(e)
+			return false
+		}
+	}
+
+
+	async syncExchangeAllTickers( batch_query = 50 ) {
+		try {
+			let exchange_list = JSON.parse(this.exchange_list.toString());
+			//exchange_list = exchange_list.slice()
+
+			var data, i = 1;
+			var import_data = {
+				id: 'binance',
+				tickers : []
+			}
+
+			do {
+				data = await this.fetchExchangeTicker('binance', {page: i})
+				console.log(data.length)
+				import_data.tickers.push(...data)
+				i++;
+			} while (data.length  > 0)
+
+
+			// console.log(import_data)
+
+			await elasticService.add_document(this.exchange_tickers_index, import_data.id, import_data)
+
+			// for (const value in exchange_list) {
+			// 	const id = exchange_list[value].id
+			// 	console.log("Syncing " + id);
+			// 	// starting sync
+			// 	let response = await this.fetchExchangeDetail(id) // true
+			// 	await elasticService.add_document(this.exchange_detail_index, id, response)
+			//
+			// }
+
+		} catch (e) {
+			console.log(e)
+			return false
+		}
+
+		return true
+	}
+
+
+
 }
 
 let CGKExchange = new CGKExchangeController();
