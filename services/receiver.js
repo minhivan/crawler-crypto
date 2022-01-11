@@ -11,7 +11,7 @@ amqp.connect(process.env.amqpUrl, function(error0, connection) {
         if (error1) {
             throw error1;
         }
-        let queue = 'movieUrls';
+        let queue = 'task_queue';
 
         channel.assertQueue(queue, {
             durable: true
