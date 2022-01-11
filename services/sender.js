@@ -16,7 +16,7 @@ amqp.connect(process.env.amqpUrl, function(err, conn) {
             console.log("Sent "+urlString);
         }
     });
-    // setTimeout(function() { conn.close(); process.exit(0) }, 500);
+    setTimeout(function() { conn.close(); process.exit(0) }, 500);
 });
 
 //
