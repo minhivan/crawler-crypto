@@ -108,11 +108,14 @@ class CGKCoinController {
         try {
             let total_coin = JSON.parse(this.coin_list.toString()).length
             let total_page = Math.round(total_coin / per_page )
-            console.log(total_page)
+            // console.log(total_page)
             let x = 1;
             for(x; x <= total_page; x++) {
                 console.log("Syncing page " + x)
                 let data = await this.fetchCoinMarket(per_page, x)
+                data.map((element, index) => {
+                    element.rank = (x - 1) * per_page + index + 1;
+                })
                 if(data.length) await elasticService.create_bulk(this.coin_markets_index, data)
             }
 
@@ -179,6 +182,7 @@ class CGKCoinController {
     // sync batch coin details
     async syncBatchCoinDetails (batch_query = 50) {
         try {
+
             let coin_list = JSON.parse(this.coin_list.toString());
             //coin_list = coin_list.slice(12284);
             let arr = [];
@@ -247,6 +251,7 @@ class CGKCoinController {
     }
 
 
+
     async fetchCoinTickers(id, params = {}, sync = false) {
         try {
             const response = await CoinGeckoClient.coins.fetchTickers(id, params);
@@ -265,7 +270,40 @@ class CGKCoinController {
 
 
     async syncCoinTickers() {
+        try {
+            let coin_list = JSON.parse(this.coin_list.toString());
+            //exchange_list = exchange_list.slice(20)
+            for await (const value of coin_list) {
+                const id = value.id
+                var data = [], i = 1;
 
+                do {
+                    var import_data = []
+                    data = await this.fetchExchangeTicker(id, {page: i})
+                    console.log("Sync " + id + " page " + i)
+                    // console.log("Data length" ,data)
+                    if(data.length > 0) {
+                        data.map((item, index) => {
+                            item.idx = id + "." + item.coin_id + "." + (item.target_coin_id ?? "null")
+                            item.id = id
+                            item.rank = (index + (i-1) * 100) + 1;
+                            import_data.push(item);
+                        })
+                        console.log("Import length", import_data.length)
+
+                        await elasticService.create_bulk(this.exchange_tickers_index, import_data) // sync
+                    }
+                    data.length = 0;
+                    i++;
+                } while (data.length >= 100 && i < limit_page)
+            }
+
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+
+        return true
     }
 
 
@@ -276,8 +314,13 @@ class CGKCoinController {
 
 
     async getCoinMarketChart(id, params = {}) {
+        let days =  [1, 7, 30, 90, 180, 365];
+        for (var i of days) {
 
-        return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
+            console.log(i)
+        }
+
+        //return CoinGeckoClient.coins.fetchMarketChart('bitcoin', params);
     }
 
 
