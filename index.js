@@ -6,17 +6,13 @@ let CGKDerivative = require('./controllers/derivatives.controller')
 const init = async () => {
     // fetch coin list
     await CGKCoin.syncCoinList();
-
     // fetch exchange list
     await CGKExchange.syncListExchange();
-
-    // fetch derivatives list
-    //await CGKDerivative.fetchDerivativeExchangesList()
 
 }
 
 
-
+// Using process env to create crawler with index
 (async function () {
     for await (let val of process.argv) {
         switch (val) {
@@ -30,8 +26,23 @@ const init = async () => {
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
 
+            case "sync_coin_ticker":
+                await CGKExchange.syncBatchExchangeDetails(50);
+                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+                break;
+
+            case "sync_coin_chart":
+                await CGKExchange.syncBatchExchangeDetails(50);
+                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+                break;
+
             case "sync_exchange_detail":
                 await CGKExchange.syncBatchExchangeDetails(50);
+                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+                break;
+
+            case "sync_exchange_ticker":
+                await CGKExchange.syncExchangeAllTickers();
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
 
@@ -40,11 +51,10 @@ const init = async () => {
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
 
-            case "sync_derivative_detail":
+            case "sync_derivative_exchange":
                 await CGKDerivative.syncDerivativeAllExchange();
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
-
 
             case "test":
                 console.log("Test case 1");
