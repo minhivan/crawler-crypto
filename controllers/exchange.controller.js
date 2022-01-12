@@ -226,7 +226,7 @@ class CGKExchangeController {
 			await new Promise(resolve => setTimeout(resolve, 5/6*1000));
 			const response = await CoinGeckoClient.exchanges.fetchTickers(id, params)
 			// console.log(JSON.stringify(response.data).length)
-			return clean(response.data)
+			return clean(response.data.tickers)
 		} catch (e) {
 			console.log(e)
 			return false
@@ -234,37 +234,34 @@ class CGKExchangeController {
 	}
 
 
-	async syncExchangeAllTickers( batch_query = 50 ) {
+	async syncExchangeAllTickers( limit_page = 5) {
 		try {
 			let exchange_list = JSON.parse(this.exchange_list.toString());
-			//exchange_list = exchange_list.slice()
+			//exchange_list = exchange_list.slice(20)
+			for await (const value of exchange_list) {
+				const id = value.id
+				var data = [], i = 1;
 
-			var data, i = 1;
-			var import_data = {
-				id: 'okex',
-				tickers : []
+				do {
+					var import_data = []
+					data = await this.fetchExchangeTicker(id, {page: i})
+					console.log("Sync " + id + " page " + i)
+					// console.log("Data length" ,data)
+					if(data.length > 0) {
+						data.map((item, index) => {
+							item.idx = id + "." + item.coin_id + "." + (item.target_coin_id ?? "null")
+							item.id = id
+							item.rank = (index + (i-1) * 100) + 1;
+							import_data.push(item);
+						})
+						console.log("Import length", import_data.length)
+
+						await elasticService.create_bulk(this.exchange_tickers_index, import_data) // sync
+					}
+					data.length = 0;
+					i++;
+				} while (data.length >= 100 && i < limit_page)
 			}
-
-			do {
-				data = await this.fetchExchangeTicker('okex', {page: i})
-				// console.log(data.length)
-				import_data.tickers.push(...data.tickers)
-				i++;
-			} while (data.length  > 0)
-
-
-			// console.log(import_data)
-
-			//await elasticService.add_document(this.exchange_tickers_index, import_data.id, import_data)
-			await elasticService.create_bulk(this.exchange_tickers_index, [import_data])
-			// for (const value in exchange_list) {
-			// 	const id = exchange_list[value].id
-			// 	console.log("Syncing " + id);
-			// 	// starting sync
-			// 	let response = await this.fetchExchangeDetail(id) // true
-			// 	await elasticService.add_document(this.exchange_detail_index, id, response)
-			//
-			// }
 
 		} catch (e) {
 			console.log(e)
