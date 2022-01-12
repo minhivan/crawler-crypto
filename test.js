@@ -2,40 +2,47 @@ let CGKCoin = require('./controllers/coin.controller');
 let CGKExchange = require('./controllers/exchange.controller');
 let CGKDerivative = require('./controllers/derivatives.controller');
 
-//CGKCoin.fetchCoinList();
-//CGKCoin.syncCoinList();
 
-//CGKCoin.syncCoinMarket(250, true);
-//CGKCoin.syncCoinList();
+console.time("Time my API call");
+(async function () {
+    //CGKCoin.fetchCoinList();
+    //CGKCoin.syncCoinList();
 
-//CGKCoin.fetchCoinDetails('bitcoin', {}, true)
-//CGKCoin.syncCoinDetails();
-//CGKCoin.syncBatchCoinDetails();
-//CGKCoin.testSyncCoinDetails();
-
-
-/* Test purpose */
-//CGKCoin.testFetchCoinDetails(true);
-//CGKCoin.testFetchCoinDetails();
-//CGKCoin.syncCoinDetails();
-//CGKCoin.getCoinTickers('bitcoin', {}, true)
+    //await CGKCoin.syncCoinMarket(50);
+    //CGKCoin.syncCoinList();
+    await CGKCoin.getCoinMarketChart();
+    //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
+    //CGKCoin.syncCoinDetails();
+    //CGKCoin.syncBatchCoinDetails();
+    //CGKCoin.testSyncCoinDetails();
 
 
-// ========= Exchange ==========
-//CGKExchange.fetchAllExchange(250, 1)
-//CGKExchange.fetchListExchange();
-//CGKExchange.syncListExchange();
-//CGKExchange.syncAllExchange();
-//CGKExchange.syncExchangeDetails();
-//CGKExchange.syncBatchExchangeDetails(50);
-//CGKExchange.testSyncExchangeDetails('binance')
-// CGKExchange.syncExchangeRates();
-//CGKExchange.fetchExchangeTicker('binance')
-CGKExchange.syncExchangeAllTickers()
+    /* Test purpose */
+    //CGKCoin.testFetchCoinDetails(true);
+    //CGKCoin.testFetchCoinDetails();
+    //CGKCoin.syncCoinDetails();
+    //CGKCoin.getCoinTickers('bitcoin', {}, true)
 
-// ========== Derivative ==========
-//CGKDerivative.syncDerivativeTickers();
-//CGKDerivative.fetchDerivativeExchangesList();
-//CGKDerivative.fetchDerivativeExchangeData('bitmex')
-//CGKDerivative.fetchDerivativeAllExchange();
-//CGKDerivative.syncDerivativeAllExchange()
+
+    // ========= Exchange ==========
+    //CGKExchange.fetchAllExchange(250, 1)
+    //CGKExchange.fetchListExchange();
+    //CGKExchange.syncListExchange();
+    //CGKExchange.syncAllExchange();
+    //CGKExchange.syncExchangeDetails();
+    //CGKExchange.syncBatchExchangeDetails(50);
+    //CGKExchange.testSyncExchangeDetails('binance')
+    // CGKExchange.syncExchangeRates();
+    //CGKExchange.fetchExchangeTicker('binance')
+    //await CGKExchange.syncExchangeAllTickers()
+
+    // ========== Derivative ==========
+    //CGKDerivative.syncDerivativeTickers();
+    //CGKDerivative.fetchDerivativeExchangesList();
+    //CGKDerivative.fetchDerivativeExchangeData('bitmex')
+    //CGKDerivative.fetchDerivativeAllExchange();
+    //CGKDerivative.syncDerivativeAllExchange()
+
+})()
+
+console.timeEnd("Time my API call");
