@@ -16,7 +16,7 @@ const init = async () => {
 (async function () {
     for await (let val of process.argv) {
         switch (val) {
-            case "sync_coin_detail":
+            case "sync_coin_detail": // Loop coin list
                 await CGKCoin.syncBatchCoinDetails(25);
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
@@ -25,12 +25,13 @@ const init = async () => {
                 await CGKCoin.syncCoinMarket(50);
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
-
-            // case "sync_coin_ticker":
-            //     await CGKExchange.syncBatchExchangeDetails(50);
-            //     await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
-            //     break;
-
+            
+            case "sync_coin_ticker": // Loop coin list
+                await CGKCoin.syncCoinTickers();
+                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+                break;
+            
+                
             // case "sync_coin_chart":
             //     await CGKExchange.syncBatchExchangeDetails(50);
             //     await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
@@ -41,7 +42,7 @@ const init = async () => {
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
 
-            case "sync_exchange_ticker":
+            case "sync_exchange_ticker": // Loop exchange list
                 await CGKExchange.syncExchangeAllTickers();
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
