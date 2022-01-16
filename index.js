@@ -5,9 +5,9 @@ let CGKDerivative = require('./controllers/derivatives.controller')
 // init fetch all data list & create files
 const init = async () => {
     // fetch coin list
-    await CGKCoin.syncCoinList();
+    await CGKCoin.fetchCoinList();
     // fetch exchange list
-    await CGKExchange.syncListExchange();
+   // await CGKExchange.syncListExchange();
 
 }
 

@@ -1,0 +1,138 @@
+[
+  {
+    "id": "bitcoin",
+    "symbol": "btc",
+    "name": "Bitcoin",
+    "asset_platform_id": null,
+    "platforms": {
+      "": ""
+    },
+    "block_time_in_minutes": 10,
+    "hashing_algorithm": "SHA-256",
+    "categories": [
+      "Cryptocurrency"
+    ],
+    "public_notice": null,
+    "additional_notices": [],
+    "links": {
+      "homepage": [
+        "http://www.bitcoin.org",
+        "",
+        ""
+      ],
+      "blockchain_site": [
+        "https://blockchair.com/bitcoin/",
+        "https://btc.com/",
+        "https://btc.tokenview.com/",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "official_forum_url": [
+        "https://bitcointalk.org/",
+        "",
+        ""
+      ],
+      "chat_url": [
+        "",
+        "",
+        ""
+      ],
+      "announcement_url": [
+        "",
+        ""
+      ],
+      "twitter_screen_name": "bitcoin",
+      "facebook_username": "bitcoins",
+      "bitcointalk_thread_identifier": null,
+      "telegram_channel_identifier": "",
+      "subreddit_url": "https://www.reddit.com/r/Bitcoin/",
+      "repos_url": {
+        "github": [
+          "https://github.com/bitcoin/bitcoin",
+          "https://github.com/bitcoin/bips"
+        ],
+        "bitbucket": []
+      }
+    },
+    "image": {
+      "thumb": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
+      "small": "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
+      "large": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"
+    },
+    "country_origin": "",
+    "genesis_date": "2009-01-03",
+    "sentiment_votes_up_percentage": 60.32,
+    "sentiment_votes_down_percentage": 39.68,
+    "market_cap_rank": 1,
+    "coingecko_rank": 2,
+    "coingecko_score": 80.374,
+    "developer_score": 98.879,
+    "community_score": 71.024,
+    "liquidity_score": 100.147,
+    "public_interest_score": 0,
+    "community_data": {
+      "facebook_likes": null,
+      "twitter_followers": 4195117,
+      "reddit_average_posts_48h": 6.636,
+      "reddit_average_comments_48h": 1133.545,
+      "reddit_subscribers": 3743690,
+      "reddit_accounts_active_48h": 3372,
+      "telegram_channel_user_count": null
+    },
+    "developer_data": {
+      "forks": 31090,
+      "stars": 60718,
+      "subscribers": 3895,
+      "total_issues": 6654,
+      "closed_issues": 6033,
+      "pull_requests_merged": 9290,
+      "pull_request_contributors": 769,
+      "code_additions_deletions_4_weeks": {
+        "additions": 29492,
+        "deletions": -3241
+      },
+      "commit_count_4_weeks": 322,
+      "last_4_weeks_commit_activity_series": [
+        3,
+        9,
+        13,
+        7,
+        4,
+        3,
+        5,
+        1,
+        0,
+        3,
+        4,
+        1,
+        4,
+        3,
+        1,
+        6,
+        1,
+        0,
+        3,
+        0,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "public_interest_stats": {
+      "alexa_rank": 9440,
+      "bing_matches": null
+    },
+    "status_updates": [],
+    "last_updated": "2022-01-04T10:47:59.605Z"
+  }
+]
