@@ -12,7 +12,6 @@ class CGKExchangeController {
 	constructor() {
 		this.exchange_list = fs.existsSync('data/exchange/exchange_list.json') ? fs.readFileSync('data/exchange/exchange_list.json') : '[]';
 		this.exchange_rates = fs.existsSync('data/exchange/exchange_rates.json') ? fs.readFileSync('data/exchange/exchange_rates.json') : '[]';
-
 		this.exchange_list_index = "cgk_exchange_list"
 		this.exchange_index = "cgk_exchange"
 		this.exchange_detail_index = "cgk_exchange_details"
@@ -30,7 +29,7 @@ class CGKExchangeController {
 		try {
 			const data = await CoinGeckoClient.exchanges.list();
 			fs.writeFileSync('data/exchange/exchange_list.json', JSON.stringify(data.data))
-			console.log('total coin are ' + data.data.length + ' elements.')
+			console.log('total exchange are ' + data.data.length + ' elements.')
 
 		} catch (e) {
 			console.log(e)
@@ -59,6 +58,8 @@ class CGKExchangeController {
 		}
 		return true
 	}
+	
+	
 	
 	// get data and store it to json file
 	async fetchAllExchange(params) {
@@ -107,6 +108,8 @@ class CGKExchangeController {
 		return true
 	}
 
+	
+	
 	// Fetch exchange details
 	async fetchExchangeDetail(id) {
 		try {
@@ -125,6 +128,7 @@ class CGKExchangeController {
 	// Sync batch exchange details
 	async syncBatchExchangeDetails(batch_query = 50) {
 		try {
+			await this.fetchListExchange();
 			let exchange_list = JSON.parse(this.exchange_list.toString());
 			//exchange_list = exchange_list.slice(220);
 			let arr = [];
@@ -186,6 +190,8 @@ class CGKExchangeController {
 		}
 	}
 
+	
+	
 	// Fetch exchange rates
 	async fetchExchangeRates() {
 		try {
@@ -220,6 +226,8 @@ class CGKExchangeController {
 		}
 	}
 
+	
+	
 	// Fetch exchange tickers
 	async fetchExchangeTicker(id, params = {}) {
 		try {
@@ -233,9 +241,10 @@ class CGKExchangeController {
 		}
 	}
 
-
+	// Sync exchange all tickers
 	async syncExchangeAllTickers( limit_page = 5) {
 		try {
+			await this.fetchListExchange()
 			let exchange_list = JSON.parse(this.exchange_list.toString());
 			//exchange_list = exchange_list.slice(20)
 			for await (const value of exchange_list) {
@@ -270,9 +279,7 @@ class CGKExchangeController {
 
 		return true
 	}
-
-
-
+	
 }
 
 let CGKExchange = new CGKExchangeController();
