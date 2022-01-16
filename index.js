@@ -26,15 +26,15 @@ const init = async () => {
                 await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
                 break;
 
-            case "sync_coin_ticker":
-                await CGKExchange.syncBatchExchangeDetails(50);
-                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
-                break;
+            // case "sync_coin_ticker":
+            //     await CGKExchange.syncBatchExchangeDetails(50);
+            //     await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+            //     break;
 
-            case "sync_coin_chart":
-                await CGKExchange.syncBatchExchangeDetails(50);
-                await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
-                break;
+            // case "sync_coin_chart":
+            //     await CGKExchange.syncBatchExchangeDetails(50);
+            //     await new Promise(resolve => setTimeout(resolve, 1000*60*15)) // wait for another function setup
+            //     break;
 
             case "sync_exchange_detail":
                 await CGKExchange.syncBatchExchangeDetails(50);
