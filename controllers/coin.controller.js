@@ -254,6 +254,7 @@ class CGKCoinController {
                         data.map((item, index) => {
                             item.idx    = item?.market?.identifier + (item?.coin_id ? "." + item.coin_id : "") + (item?.target_coin_id ? ("." + item?.target_coin_id) : "")
                             item.rank   = (index + (i-1) * 100) + 1; // paginate to 100
+                            item.source_index = id;
                             import_data.push(item);
                         })
                         //console.log("Import length", import_data.length)
@@ -274,7 +275,44 @@ class CGKCoinController {
         return true
     }
     
-    
+    // Test sync coin tickers
+    async testSyncCoinTickers(max_page = 5) {
+        try {
+            
+            //coin_list = coin_list.slice(30);
+            const id = 'bitcoin'
+            var data = [], i = 1;
+            do {
+                console.count()
+                var import_data = []
+                data = await this.fetchCoinTickers(id, {page: i})
+                console.log("Sync coin " + id + " page " + i)
+                // console.log("Data length" ,data)
+                //console.log(data)
+                if(data.length > 0) {
+                    data.map(async (item, index) => {
+                        item.idx    = item?.market?.identifier + (item?.coin_id ? "." + item.coin_id : "") + (item?.target_coin_id ? ("." + item?.target_coin_id) : "")
+                        item.rank   = (index + (i-1) * 100) + 1; // paginate to 100
+                        item.source_index = id;
+                        await elasticService.add_document(this.coin_tickers_index, item.idx, item );
+                        import_data.push(item);
+                    })
+                    //console.log("Import length", import_data.length)
+            
+                    //await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
+                }
+                //console.log(import_data)
+                console.log(data.length)
+                i++;
+            } while (data.length >= 100 && i < 5 )
+            
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+        
+        return true
+    }
     
     // get historicalData
     async getHistoricalData(id, params = {}) {
