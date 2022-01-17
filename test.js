@@ -12,8 +12,8 @@ console.time("Time my API call");
     //CGKCoin.syncCoinList();
     // await CGKCoin.getCoinMarketChart();
     //await CGKCoin.syncCoinTickers()
-    await CGKCoin.testSyncCoinTickers()
-    // await CGKCoin.syncCoinMarketChart()
+    //await CGKCoin.testSyncCoinTickers()
+    await CGKCoin.syncCoinMarketChart()
     //CGKCoin.fetchCoinDetails('bitcoin', {}, true)
     //CGKCoin.syncCoinDetails();
     //await CGKCoin.syncBatchCoinDetails();
