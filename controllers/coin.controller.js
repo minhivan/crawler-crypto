@@ -18,8 +18,9 @@ class CGKCoinController {
         this.coin_markets_index = "cgk_coin_markets"
         this.coin_list_index = "cgk_coin_list"
         this.coin_tickers_index = "cgk_coin_tickers"
-        this.test_data = fs.readFileSync('data/test.json');
-        this.chart_days_ago = [1, 7, 30, 90, 180, 365];
+        this.test_data = fs.readFileSync('data/test.json')
+        this.chart_days_ago = [1, 7, 30, 90, 180, 365]
+        this.coin_market_chart_index = "cgk_coin_market_chart"
     }
     
     async ping() {
@@ -283,7 +284,6 @@ class CGKCoinController {
             const id = 'bitcoin'
             var data = [], i = 1;
             do {
-                console.count()
                 var import_data = []
                 data = await this.fetchCoinTickers(id, {page: i})
                 console.log("Sync coin " + id + " page " + i)
@@ -294,12 +294,12 @@ class CGKCoinController {
                         item.idx    = item?.market?.identifier + (item?.coin_id ? "." + item.coin_id : "") + (item?.target_coin_id ? ("." + item?.target_coin_id) : "")
                         item.rank   = (index + (i-1) * 100) + 1; // paginate to 100
                         item.source_index = id;
-                        await elasticService.add_document(this.coin_tickers_index, item.idx, item );
+                        //await elasticService.add_document(this.coin_tickers_index, item.idx, item );
                         import_data.push(item);
                     })
                     //console.log("Import length", import_data.length)
             
-                    //await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
+                    await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
                 }
                 //console.log(import_data)
                 console.log(data.length)
@@ -340,10 +340,24 @@ class CGKCoinController {
             vs_currency: 'usd',
             days: 1,
         }
-        
-        let data = await this.getCoinMarketChart('bitcoin', params);
-        
-        console.log(data)
+        //await this.fetchCoinList();
+        let coin_list = JSON.parse(this.coin_list.toString());
+        //coin_list = coin_list.slice(10,20);
+        let arr = [];
+        for await (const [index, value]  of coin_list.entries()) {
+            const id = value.id
+            let data = await this.getCoinMarketChart(id , params);
+            data.idx = id + "." + params.vs_currency + '.' + params.days
+            data.source_index = id;
+            data.currency = params.vs_currency
+            arr.push(data)
+            if(arr.length === batch_query || index == (coin_list.length - 1)) {
+                console.log("Bulk array to elastic")
+                await elasticService.create_bulk(this.coin_market_chart_index, arr)
+                arr.length = 0;
+            }
+        }
+
         // for (var i of this.chart_days_ago) {
         //     console.log(i)
         // }
