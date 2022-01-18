@@ -326,13 +326,13 @@ class CGKCoinController {
     }
 
     // fetch coin market chart
-    async syncCoinMarketChart(batch_query = 50) {
+    async syncCoinMarketChart(batch_query = 50, days = 1) {
         try {
             let params = {
                 vs_currency: 'usd',
-                days: 1,
+                days,
             }
-            //await this.fetchCoinList();
+            await this.fetchCoinList();
             let coin_list = JSON.parse(this.coin_list.toString())
             //coin_list = coin_list.slice(0, 50)
             let arr = [];
