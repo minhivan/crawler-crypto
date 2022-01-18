@@ -19,7 +19,7 @@ class CGKCoinController {
         this.coin_list_index = "cgk_coin_list"
         this.coin_tickers_index = "cgk_coin_tickers"
         this.test_data = fs.readFileSync('data/test.json')
-        this.chart_days_ago = [1, 7, 30, 90, 180, 365]
+        this.market_chart_days_ago = [1, 7, 30, 90, 180, 365]
         this.coin_market_chart_index = "cgk_coin_market_chart"
     }
 
@@ -234,7 +234,7 @@ class CGKCoinController {
         try {
             await this.fetchCoinList();
             let coin_list = JSON.parse(this.coin_list.toString());
-            //coin_list = coin_list.slice(30);
+            coin_list = coin_list.slice(430);
             for await (const value of coin_list) {
                 const id = value.id
                 var data = [], i = 1;
@@ -256,7 +256,6 @@ class CGKCoinController {
                         await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
                     }
                     //console.log(import_data)
-                    data.length = 0;
                     i++;
                 } while (data.length >= 100 && i < max_page)
             }
@@ -306,6 +305,13 @@ class CGKCoinController {
         return true
     }
 
+    findIndex() {
+        let coin_list = JSON.parse(this.coin_list.toString())
+        let index = coin_list.findIndex(x => x.id ==="calypso");
+        console.log(index)
+    }
+
+
     // get historicalData
     async getHistoricalData(id, params = {}) {
 
@@ -326,28 +332,31 @@ class CGKCoinController {
     }
 
     // fetch coin market chart
-    async syncCoinMarketChart(batch_query = 50, days = 1) {
+    async syncCoinMarketChart(batch_query = 50) {
         try {
             let params = {
-                vs_currency: 'usd',
-                days,
+                vs_currency: 'usd'
             }
             await this.fetchCoinList();
             let coin_list = JSON.parse(this.coin_list.toString())
-            //coin_list = coin_list.slice(0, 50)
+            coin_list = coin_list.slice(250, 360)
             let arr = [];
-            for await (const [index, value] of coin_list.entries()) {
+            for (const [index, value] of coin_list.entries()) {
                 const id = value.id
-                console.log("Sync coin " + id)
-                let data = await this.getCoinMarketChart(id, params);
-                data.idx = id + "." + params.vs_currency + '.' + params.days
-                data.source_index = id;
-                data.currency = params.vs_currency
-                arr.push(data)
-                if (arr.length === batch_query || index == (coin_list.length - 1)) {
-                    console.log("Bulk array to elastic")
-                    await elasticService.create_bulk(this.coin_market_chart_index, arr)
-                    arr.length = 0
+                for (const d of this.market_chart_days_ago) {
+                    console.log("Sync coin " + id + "day " + d)
+                    params.days = d
+                    let data = await this.getCoinMarketChart(id, params)
+                    data.idx = id + "." + params.vs_currency + '.' + params.days
+                    data.source_index = id
+                    data.currency = params.vs_currency
+                    data.day = params.days
+                    arr.push(data)
+                    if (arr.length === batch_query || index == (coin_list.length - 1)) {
+                        console.log("Bulk array to elastic")
+                        await elasticService.create_bulk(this.coin_market_chart_index, arr)
+                        arr.length = 0
+                    }
                 }
             }
         } catch (e) {
