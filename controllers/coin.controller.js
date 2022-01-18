@@ -230,11 +230,13 @@ class CGKCoinController {
     }
 
     // sync coin tickers
-    async syncCoinTickers(max_page = 5) {
+    async syncCoinTickers(max_page = 5, split = 2) {
         try {
             await this.fetchCoinList();
             let coin_list = JSON.parse(this.coin_list.toString());
-            coin_list = coin_list.slice(430);
+            let splitIndex = Math.round(coin_list.length / 2);
+            coin_list = coin_list.slice(0, splitIndex);
+            //coin_list = coin_list.slice(splitIndex);
             for await (const value of coin_list) {
                 const id = value.id
                 var data = [], i = 1;
@@ -246,8 +248,8 @@ class CGKCoinController {
                     //console.log(data)
                     if (data.length > 0) {
                         data.map((item, index) => {
-                            item.idx = item?.market?.identifier + (item?.coin_id ? "." + item.coin_id : "") + (item?.target_coin_id ? ("." + item?.target_coin_id) : "")
-                            item.rank = (index + (i - 1) * 100) + 1; // paginate to 100
+                            item.idx = item?.market?.identifier + (item?.base ? "." + item.base.toLocaleLowerCase() : "") + (item?.target ? ("." + item.target.toLocaleLowerCase()) : "")
+                            item.rank = index + 1 + (i - 1) * 100 ;
                             item.source_index = id;
                             import_data.push(item);
                         })
@@ -257,7 +259,7 @@ class CGKCoinController {
                     }
                     //console.log(import_data)
                     i++;
-                } while (data.length >= 100 && i < max_page)
+                } while (data.length === 100 && i <= max_page)
             }
 
         } catch (e) {
@@ -282,8 +284,8 @@ class CGKCoinController {
                 //console.log(data)
                 if (data.length > 0) {
                     data.map(async (item, index) => {
-                        item.idx = item?.market?.identifier + (item?.coin_id ? "." + item.coin_id : "") + (item?.target_coin_id ? ("." + item?.target_coin_id) : "")
-                        item.rank = (index + (i - 1) * 100) + 1; // paginate to 100
+                        item.idx = item?.market?.identifier + (item?.base ? "." + item.base.toLocaleLowerCase() : "") + (item?.target ? ("." + item.target.toLocaleLowerCase()) : "")
+                        item.rank = index + 1 + (i - 1) * 100 ; // paginate to 100
                         item.source_index = id;
                         //await elasticService.add_document(this.coin_tickers_index, item.idx, item );
                         import_data.push(item);
@@ -293,9 +295,8 @@ class CGKCoinController {
                     await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
                 }
                 //console.log(import_data)
-                console.log(data.length)
                 i++;
-            } while (data.length >= 100 && i < 5)
+            } while (data.length === 100 && i <= 5)
 
         } catch (e) {
             console.log(e)
@@ -305,6 +306,7 @@ class CGKCoinController {
         return true
     }
 
+    
     findIndex() {
         let coin_list = JSON.parse(this.coin_list.toString())
         let index = coin_list.findIndex(x => x.id ==="calypso");
