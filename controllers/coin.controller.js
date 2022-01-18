@@ -344,7 +344,7 @@ class CGKCoinController {
             for (const [index, value] of coin_list.entries()) {
                 const id = value.id
                 for (const d of this.market_chart_days_ago) {
-                    console.log("Sync coin " + id + "day " + d)
+                    console.log("Sync coin " + id + " - day " + d)
                     params.days = d
                     let data = await this.getCoinMarketChart(id, params)
                     data.idx = id + "." + params.vs_currency + '.' + params.days
