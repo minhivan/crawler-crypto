@@ -8,7 +8,6 @@ const init = async () => {
     await CGKCoin.fetchCoinList();
     // fetch exchange list
     // await CGKExchange.syncListExchange();
-
 }
 
 
@@ -32,7 +31,7 @@ const init = async () => {
                 break;
 
             case "sync_coin_market_chart":
-                await CGKCoin.syncCoinMarketChart(50, 1);
+                await CGKCoin.syncCoinMarketChart(10);
                 await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 15)) // wait for another function setup
                 break;
 
