@@ -2,95 +2,65 @@
 
 Crawler using NodeJS for performance with Elasticsearch DB for high efficiency.
 
-- Type some Markdown on the left
-- See HTML in the right
-- ✨Magic ✨
+---
+## Requirements
 
-## Features
+For development, you will only need Node.js and a node global package, Yarn, installed in your environement.
 
-- Import a HTML file and watch it magically convert to Markdown
-As [John Gruber] writes on the [Markdown site][df1]
+### Node
+- #### Node installation on Windows
 
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
+  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
+  Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
 
-## Tech
+- #### Node installation on Ubuntu
 
-Dillinger uses a number of open source projects to work properly:
+  You can install nodejs and npm easily with apt install, just run the following commands.
 
-- [NodeJS](https://breakdance.github.io/breakdance/) - HTML enhanced for web apps!
+      $ sudo apt install nodejs
+      $ sudo apt install npm
 
-And of course Dillinger itself is open source with a [public repository][dill]
-on GitHub.
+- #### Other Operating Systems
+  You can find more information about the installation on the [official Node.js website](https://nodejs.org/) and the [official NPM website](https://npmjs.org/).
 
-## Installation
+If the installation was successful, you should be able to run the following command.
 
-Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
+    $ node --version
+    v14.18.3
 
-Install the dependencies and devDependencies and start the server.
+    $ npm --version
+    6.14.15
 
-```sh
-cd dillinger
-npm i
-node app
-```
+If you need to update `npm`, you can make it using `npm`! Cool right? After running the following command, just open again the command line and be happy.
 
-## Plugins
+    $ npm install npm -g
 
-Dillinger is currently extended with the following plugins.
-Instructions on how to use them in your own application are linked below.
+###
+### Yarn installation
+After installing node, this project will need yarn too, so just run the following command.
 
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+      $ npm install -g yarn
 
+---
 
-## Docker
+## Install
 
-Dillinger is very easy to install and deploy in a Docker container.
+    $ git clone https://github.com/YOUR_USERNAME/PROJECT_TITLE
+    $ cd PROJECT_TITLE
+    $ yarn install
 
-By default, the Docker will expose port 8080, so change this within the
-Dockerfile if necessary. When ready, simply use the Dockerfile to
-build the image.
+## Configure app
 
-```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
-```
+Open `a/nice/path/to/a.file` then edit it with your settings. You will need:
 
-This will create the dillinger image and pull in the necessary dependencies.
-Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
+- A setting;
+- Another setting;
+- One more setting;
 
-Once done, run the Docker image and map the port to whatever you wish on
-your host. In this example, we simply map port 8000 of the host to
-port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
+## Running the project
 
-```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
-```
+    $ yarn start
 
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
+## Simple build for production
 
-Verify the deployment by navigating to your server address in
-your preferred browser.
-
-```sh
-127.0.0.1:8000
-```
-
-## License
-
-MIT
-
-**Free Software, Hell Yeah!**
+    $ yarn build

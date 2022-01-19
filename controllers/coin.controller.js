@@ -249,12 +249,11 @@ class CGKCoinController {
                     if (data.length > 0) {
                         data.map((item, index) => {
                             item.idx = item?.market?.identifier + (item?.base ? "." + item.base.toLocaleLowerCase() : "") + (item?.target ? ("." + item.target.toLocaleLowerCase()) : "")
-                            item.rank = index + 1 + (i - 1) * 100 ;
-                            item.source_index = id;
+                            item.rank = (index + (i-1) * 100) + 1;
+                            item.id = id;
                             import_data.push(item);
                         })
                         //console.log("Import length", import_data.length)
-
                         await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
                     }
                     //console.log(import_data)
@@ -274,7 +273,7 @@ class CGKCoinController {
         try {
 
             //coin_list = coin_list.slice(30);
-            const id = 'bitcoin'
+            const id = 'ethereum'
             var data = [], i = 1;
             do {
                 var import_data = []
@@ -284,6 +283,7 @@ class CGKCoinController {
                 //console.log(data)
                 if (data.length > 0) {
                     data.map(async (item, index) => {
+                        if(item)
                         item.idx = item?.market?.identifier + (item?.base ? "." + item.base.toLocaleLowerCase() : "") + (item?.target ? ("." + item.target.toLocaleLowerCase()) : "")
                         item.rank = index + 1 + (i - 1) * 100 ; // paginate to 100
                         item.source_index = id;
@@ -296,13 +296,11 @@ class CGKCoinController {
                 }
                 //console.log(import_data)
                 i++;
-            } while (data.length === 100 && i <= 5)
-
+            } while (data.length === 100 && i <= max_page)
         } catch (e) {
             console.log(e)
             return false
         }
-
         return true
     }
 
