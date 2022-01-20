@@ -74,6 +74,7 @@ class ElasticService {
                 id,
                 body: data
             }, function (err, resp, status) {
+                console.log(data.rank)
                 if (err) {
                     console.log(err)
                     return false

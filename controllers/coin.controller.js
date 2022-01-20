@@ -125,7 +125,6 @@ class CGKCoinController {
         return true
     }
 
-
     // get coin details by id
     async fetchCoinDetails(id, params = {}) {
         try {
@@ -137,24 +136,6 @@ class CGKCoinController {
             console.log(error)
             return false;
         }
-    }
-
-    // test function
-    async testFetchCoinDetails(sync = false) {
-        try {
-            const data = JSON.parse(this.coin_details.toString()).shift(); // return object
-            //let formattedData = formatDataFunc('detail', data)
-            //let response = await this.fetchCoinDetails('ysl-io');
-            //console.log(formattedData)
-            let cleanData = clean(data['market_data'])
-            console.log(cleanData)
-            //fs.writeFileSync('data/coin_details.json', JSON.stringify(cleanData))
-            //if (sync) await elasticService.add_document(this.coin_details_index, formattedData.id, formattedData)
-        } catch (e) {
-            console.log(e)
-            return false
-        }
-        return true
     }
 
     // sync coin details
@@ -214,6 +195,7 @@ class CGKCoinController {
             return false;
         }
     }
+
 
 
     // get coin ticker
@@ -287,12 +269,12 @@ class CGKCoinController {
                         item.idx = item?.market?.identifier + (item?.base ? "." + item.base.toLocaleLowerCase() : "") + (item?.target ? ("." + item.target.toLocaleLowerCase()) : "")
                         item.rank = index + 1 + (i - 1) * 100 ; // paginate to 100
                         item.source_index = id;
-                        //await elasticService.add_document(this.coin_tickers_index, item.idx, item );
-                        import_data.push(item);
+                        await elasticService.add_document(this.coin_tickers_index, item.idx, item );
+                        //import_data.push(item);
                     })
                     //console.log("Import length", import_data.length)
 
-                    await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
+                    // await elasticService.create_bulk(this.coin_tickers_index, import_data) // sync
                 }
                 //console.log(import_data)
                 i++;
